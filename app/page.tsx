@@ -2,17 +2,12 @@ import React from "react";
 import GoogleButton from "./components/GoogleButton";
 import Footer from "./components/Footer";
 import styles from "./login.module.css";
-import Image from "next/image";
 
-interface LoginRegisterProps {
-  logoSrc: "logo";
-  googleLogoSrc: string;
-}
 
 const App = () => {
   return (
-    <div className="flex overflow-hidden flex-col bg-white h-screen">
-      <main className="flex flex-col justify-center items-center px-20 py-72 w-full bg-neutral-800 max-md:px-5 max-md:py-24 max-md:max-w-full h-full">
+    <div className="flex overflow-hidden flex-col h-screen">
+      <main className="flex flex-col justify-center items-center px-20 py-72 w-full  max-md:px-5 max-md:py-24 max-md:max-w-full h-full">
         <section className="flex flex-col mb-0 ml-3.5 w-full max-w-[1120px] max-md:mb-2.5 max-md:max-w-full">
           <div className="flex flex-col pt-6 pb-16 bg-slate-700 rounded-[50px] max-md:max-w-full">
             <div className="flex flex-col px-10 w-full max-md:px-5 max-md:max-w-full">
@@ -20,12 +15,10 @@ const App = () => {
                 <div className="flex flex-col self-start text-4xl font-bold text-white">
                   <img
                     loading="lazy"
-                    src="/img/logo.jpg"
-
-                    width={50}
-                    height={50}
+                    src="/img/logo.png"
+                    width={200}
                     alt="Company Logo"
-                    className="object-contain self-center max-w-full aspect-[1.31] w-[169px]"
+                   
                   />
                   <h1 className="mt-9 text-3xl">
                     <div className={styles.title}>Login / Register</div>
