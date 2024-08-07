@@ -34,7 +34,7 @@ const App = () => {
             </div>
             <p className="self-start ml-10 	text-2xl">
 
-              Use Your Google Account To login හුත්තෝ
+              Use Your Google Account To login
 
             </p>
           </div>
