@@ -12,7 +12,7 @@ const UserTypeSelection: React.FC = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Left side - Image (hidden on mobile) */}
+      
       <div className="hidden md:block md:w-1/2 relative">
         <Image
           src="/img/leaning.png"
@@ -23,10 +23,10 @@ const UserTypeSelection: React.FC = () => {
         />
       </div>
 
-      {/* Right side - Selection */}
+ 
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-slate-700 text-white p-8 md:rounded-l-[50px] border-l-4 border-indigo-500">
         <Image
-          src="/img/google.webp"
+          src="/img/logo.png"
           width={200}
           height={200}
           alt="Google Logo"
