@@ -1,6 +1,6 @@
 "use client";
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React, { useState } from "react";
+import Image from "next/image";
 
 const UserTypeSelection: React.FC = () => {
   const [userType, setUserType] = useState<string | null>(null);
@@ -12,7 +12,6 @@ const UserTypeSelection: React.FC = () => {
 
   return (
     <div className="flex h-screen">
-      
       <div className="hidden md:block md:w-1/2 relative">
         <Image
           src="/img/leaning.png"
@@ -23,8 +22,9 @@ const UserTypeSelection: React.FC = () => {
         />
       </div>
 
- 
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-slate-700 text-white p-8 md:rounded-l-[50px] border-l-4 border-indigo-500">
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-slate-950 text-white p-8 md:rounded-l-[50px] border-l-4 border-indigo-500">
+      <div className="card bg-slate-900 w-96 shadow-xl flex flex-col items-center justify-center pb-20 rounded-3xl">
+        
         <Image
           src="/img/logo.png"
           width={200}
@@ -32,22 +32,29 @@ const UserTypeSelection: React.FC = () => {
           alt="Google Logo"
           className="object-contain mb-6 w-[200px] md:w-[251px]"
         />
-        <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 text-center">Welcome!</h1>
-        <p className="text-lg md:text-xl mb-6 md:mb-8 text-center">Please select your role:</p>
-       
-        <div className="space-y-4 w-full max-w-xs">
-          <button
-            className="flex justify-center items-center w-full px-8 md:px-12 py-2 bg-sky-700 rounded-[90px] text-xl md:text-2xl hover:bg-sky-600 transition-colors duration-300"
-            onClick={() => handleSelection('student')}
-          >
-            Student
-          </button>
-          <button
-            className="flex justify-center items-center w-full px-8 md:px-12 py-2 bg-sky-700 rounded-[90px] text-xl md:text-2xl hover:bg-sky-600 transition-colors duration-300"
-            onClick={() => handleSelection('lecturer')}
-          >
-            Lecturer
-          </button>
+
+
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 text-center">
+            Welcome!
+          </h1>
+          <p className="text-lg md:text-xl mb-6 md:mb-8 text-center">
+            Please select your role:
+          </p>
+
+          <div className="space-y-4 w-full max-w-xs">
+            <button
+              className="flex justify-center items-center w-full px-8 md:px-12 py-2 bg-sky-700 rounded-[90px] text-xl md:text-2xl hover:bg-sky-600 transition-colors duration-300"
+              onClick={() => handleSelection("student")}
+            >
+              Student
+            </button>
+            <button
+              className="flex justify-center items-center w-full px-8 md:px-12 py-2 bg-sky-700 rounded-[90px] text-xl md:text-2xl hover:bg-sky-600 transition-colors duration-300"
+              onClick={() => handleSelection("lecturer")}
+            >
+              Lecturer
+            </button>
+          </div>
         </div>
 
         {userType && (
