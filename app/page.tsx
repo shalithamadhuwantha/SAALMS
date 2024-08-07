@@ -33,7 +33,11 @@ const App = () => {
               </p>
             </div>
             <p className="self-start ml-10 	text-2xl">
+<<<<<<< Updated upstream
               Use Your Google Account To loginss
+=======
+              Use Your Google Account To login pago
+>>>>>>> Stashed changes
             </p>
           </div>
           <Footer />
