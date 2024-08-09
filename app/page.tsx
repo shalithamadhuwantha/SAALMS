@@ -1,6 +1,6 @@
 import React from "react";
-import GoogleButton from "./components/GoogleButton";
-import Footer from "./components/Footer";
+import GoogleButton from "./components/Login/GoogleButton";
+import Footer from "./components/Login/Footer";
 import styles from "./login.module.css";
 import Image from "next/image";
 
