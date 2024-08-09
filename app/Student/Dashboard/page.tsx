@@ -10,7 +10,7 @@ import {
 } from "react-icons/md";
 import { IoIosSchool, IoMdSettings } from "react-icons/io";
 import { TbCalendarClock } from "react-icons/tb";
-import SideNV from "../../components/SideNvStdn";
+import SideNV from "../../components/Student/SideNvStdn";
 const Dashboard = () => {
   return (
     <div className="flex overflow-hidden flex-col h-screen bg-gray-900">
