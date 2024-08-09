@@ -33,6 +33,12 @@ const UserTypeSelection: React.FC = () => {
       </div>
 
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-slate-950 text-white p-8 md:rounded-l-[50px] border-l-4 border-indigo-500">
+        <ul className="steps mb-20">
+          <li className="step step-primary">Register</li>
+          <li className="step step-primary">Roll</li>
+          <li className="step">Organization</li>
+          <li className="step">Done</li>
+        </ul>
         <div className="card bg-slate-900 w-96 shadow-xl flex flex-col items-center justify-center pb-20 rounded-3xl">
           <button
             className="absolute top-2 right-2 p-2 bg-gray-800 text-white rounded-full  hover:text-red-600"
@@ -41,7 +47,6 @@ const UserTypeSelection: React.FC = () => {
             }}
           >
             <IoIosLogOut />
-
           </button>
           <Image
             src={session?.user?.image || "/img/default.png"}
