@@ -1,9 +1,19 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { IoIosLogOut } from "react-icons/io";
 
 const UserTypeSelection: React.FC = () => {
+  const { data: session, status } = useSession();
   const [userType, setUserType] = useState<string | null>(null);
+  const router = useRouter();
+
+  if (status !== "authenticated") {
+    router.push("/");
+    return null;
+  }
 
   const handleSelection = (type: string) => {
     setUserType(type);
@@ -23,20 +33,28 @@ const UserTypeSelection: React.FC = () => {
       </div>
 
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-slate-950 text-white p-8 md:rounded-l-[50px] border-l-4 border-indigo-500">
-      <div className="card bg-slate-900 w-96 shadow-xl flex flex-col items-center justify-center pb-20 rounded-3xl">
-        
-        <Image
-          src="/img/logo.png"
-          width={200}
-          height={200}
-          alt="Google Logo"
-          className="object-contain mb-6 w-[200px] md:w-[251px]"
-        />
+        <div className="card bg-slate-900 w-96 shadow-xl flex flex-col items-center justify-center pb-20 rounded-3xl">
+          <button
+            className="absolute top-2 right-2 p-2 bg-gray-800 text-white rounded-full  hover:text-red-600"
+            onClick={() => {
+              signOut();
+            }}
+          >
+            <IoIosLogOut />
 
+          </button>
+          <Image
+            src={session?.user?.image || "/img/default.png"}
+            width={200}
+            height={200}
+            alt="Google Logo"
+            className="w-16 h-16 rounded-full mt-5"
+          />
 
           <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 text-center">
             Welcome!
           </h1>
+          <p>{session?.user?.name} </p>
           <p className="text-lg md:text-xl mb-6 md:mb-8 text-center">
             Please select your role:
           </p>
