@@ -29,7 +29,6 @@ const Dashboard = () => {
     absent: 2
   };
 
-
   return (
     <div className="flex overflow-hidden flex-col h-screen bg-gray-900">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6 h-full">
@@ -44,25 +43,20 @@ const Dashboard = () => {
               </div>
               <div className="w-10 h-10 rounded-full overflow-hidden">
                 <Image src="/img/logo.png" width={500} height={300} alt="logo" className="w-10 h-10" />
-
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {[
-
               { icon: <MdOutlineVerified className="text-blue-500" />, title: "Student ID", value: "ITT / 2022 / 000" },
-
               { icon: <MdOutlineAssignment className="text-green-500" />, title: "Assignment", value: "000" },
-
               { icon: <TbCalendarClock className="text-yellow-500" />, title: "Lecture", value: "000" },
             ].map((item, index) => (
               <div key={index} className="bg-gray-800 rounded-xl p-4 hover:bg-gray-700 transition">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-sm font-medium">{item.title}</h3>
                   <span className="text-2xl">{item.icon}</span>
-                  
                 </div>
                 <div className="text-2xl font-bold">{item.value}</div>
                 <p className="text-xs text-gray-400">########</p>
@@ -132,37 +126,6 @@ const Dashboard = () => {
 
           <div className="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition mt-auto">
             <h2 className="text-xl font-semibold mb-4">Recent Work</h2>
-              {
-                icon: <MdOutlineVerified />,
-                title: "Student ID",
-                value: "ITT / 2022 / 000",
-              },
-              {
-                icon: <MdOutlineAssignment />,
-                title: "Assignment",
-                value: "000",
-              },
-              { icon: <TbCalendarClock />, title: "Lecture", value: "000" },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="bg-gray-800 shadow-md rounded-xl p-4 hover:bg-gray-700 transition cursor-pointer"
-              >
-                <div className="flex items-center space-x-4 mb-3">
-                  <span className="text-sky-500">{item.icon}</span>
-                  <h3 className="text-lg font-semibold">{item.title}</h3>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <h1 className="text-2xl font-bold">{item.value}</h1>
-                </div>
-                <small className="text-gray-400">########</small>
-              </div>
-            ))}
-          </div>
-
-          <div className="bg-gray-800 shadow-md rounded-xl p-4 hover:bg-gray-700 transition">
-            <h2 className="text-lg font-semibold mb-4">Recent Work</h2>
-
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-gray-700">
@@ -174,7 +137,6 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-
                 {Array(4).fill("").map((_, index) => (
                   <tr key={index} className="border-b border-gray-700 hover:bg-gray-700">
                     <td className="py-2 px-4">0{index + 1}</td>
@@ -191,34 +153,6 @@ const Dashboard = () => {
               </tbody>
             </table>
             <button className="w-full mt-4 text-sky-500 hover:underline">Show All</button>
-
-                {Array(6)
-                  .fill("")
-                  .map((_, index) => (
-                    <tr
-                      key={index}
-                      className="border-b border-gray-700 hover:bg-gray-700"
-                    >
-                      <td className="py-2 px-4">01</td>
-                      <td className="py-2 px-4">Programming</td>
-                      <td className="py-2 px-4">ITT101</td>
-                      <td className="py-2 px-4 text-yellow-500">Pending</td>
-                      <td className="py-2 px-4">
-                        <a href="#" className="text-sky-500 hover:underline">
-                          Details
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-            <a
-              href="#"
-              className="block text-center text-sky-500 mt-4 hover:underline"
-            >
-              Show All
-            </a>
-
           </div>
         </main>
       </div>
@@ -226,6 +160,4 @@ const Dashboard = () => {
   );
 };
 
-
 export default Dashboard;
-
