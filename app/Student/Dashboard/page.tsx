@@ -49,23 +49,9 @@ const Dashboard = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {[
-<<<<<<< Updated upstream
-              {
-                icon: <MdOutlineVerified />,
-                title: "Student ID",
-                value: "ITT / 2022 / 000 හුත්තෝ",
-              },
-              {
-                icon: <MdOutlineAssignment />,
-                title: "Assignment",
-                value: "000",
-              },
-              { icon: <TbCalendarClock />, title: "Lecture", value: "000" },
-=======
               { icon: <MdOutlineVerified className="text-blue-500" />, title: "Student ID", value: "ITT / 2022 / 000" },
-              { icon: <MdOutlineAssignment className="text-green-500" />, title: "Assignment", value: "000" },
+              { icon: <MdOutlineAssignment className="text-green-500" />, title: "Students", value: "000" },
               { icon: <TbCalendarClock className="text-yellow-500" />, title: "Lecture", value: "000" },
->>>>>>> Stashed changes
             ].map((item, index) => (
               <div key={index} className="bg-gray-800 rounded-xl p-4 hover:bg-gray-700 transition">
                 <div className="flex items-center justify-between mb-2">
