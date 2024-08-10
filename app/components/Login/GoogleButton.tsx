@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
 
 const GoogleButton = () => {
   return (
@@ -12,7 +15,10 @@ const GoogleButton = () => {
         alt="Google Logo"
         className="object-contain self-center max-w-full aspect-[3.02] w-[251px]"
       />
-      <button className="flex gap-5 px-12 py-2 mt-12 bg-sky-700 rounded-[90px] max-md:px-5 max-md:mt-10">
+      <button
+        onClick={() => signIn("google")}
+        className="flex gap-5 px-12 py-2 mt-12 bg-sky-700 rounded-[90px] max-md:px-5 max-md:mt-10"
+      >
         <Image
           loading="lazy"
           width={200}
