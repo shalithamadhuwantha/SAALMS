@@ -4,6 +4,7 @@ import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { IoIosLogOut } from "react-icons/io";
+import { motion, AnimatePresence } from "framer-motion";
 
 const UserTypeSelection: React.FC = () => {
   const { data: session, status } = useSession();
@@ -21,6 +22,14 @@ const UserTypeSelection: React.FC = () => {
   };
 
   return (
+    <AnimatePresence>
+    <motion.div
+      initial={{ opacity: 0, x: '100%' }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: '-100%' }}
+      transition={{ duration: 0.5 }}
+      className="flex overflow-hidden flex-col h-screen"
+    >
     <div className="flex h-screen">
       <div className="hidden md:block md:w-1/2 relative">
         <Image
@@ -32,14 +41,14 @@ const UserTypeSelection: React.FC = () => {
         />
       </div>
 
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-slate-950 text-white p-8 md:rounded-l-[50px] border-l-4 border-indigo-500">
-        <ul className="steps mb-10">
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-slate-950 text-white p-8 md:rounded-l-[50px]  ">
+        <ul className="steps mb-10 ">
           <li className="step step-primary">Register</li>
           <li className="step step-primary">Roll</li>
           <li className="step">Detail</li>
           <li className="step">Done</li>
         </ul>
-        <div className="card bg-slate-900 w-96 shadow-xl flex flex-col items-center justify-center pb-20 rounded-3xl">
+        <div className="card bg-slate-900 lg:w-96 w-[98%] px-5 shadow-xl flex flex-col items-center justify-center pb-20 rounded-3xl mx-5">
           <button
             className="absolute top-2 right-2 p-2 bg-gray-800 text-white rounded-full  hover:text-red-600"
             onClick={() => {
@@ -52,14 +61,14 @@ const UserTypeSelection: React.FC = () => {
             src={session?.user?.image || "/img/default.png"}
             width={200}
             height={200}
-            alt="Google Logo"
+            alt="profile Logo"
             className="w-16 h-16 rounded-full mt-5"
           />
 
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 text-center">
+          <p className="text-slate-400 mb-7">{session?.user?.name} </p>
+          <h1 className="text-3xl md:text-4xl font-bold md:mb-6 text-center">
             Welcome!
           </h1>
-          <p>{session?.user?.name} </p>
           <p className="text-lg md:text-xl mb-6 md:mb-8 text-center">
             Please select your role:
           </p>
@@ -87,6 +96,8 @@ const UserTypeSelection: React.FC = () => {
         )}
       </div>
     </div>
+    </motion.div>
+    </AnimatePresence>
   );
 };
 
