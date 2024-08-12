@@ -1,22 +1,47 @@
 "use client";
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { IoIosLogOut } from "react-icons/io";
 import { motion, AnimatePresence } from "framer-motion";
-import Loading from "./loading";
 import AuthGoogle from "@/app/components/root/AuthGoogle";
+import { LogOff } from "@/app/components/root/MangeLogin";
 
 const UserTypeSelection: React.FC = () => {
   const { data: session, status } = useSession();
   const [userType, setUserType] = useState<string | null>(null);
   const router = useRouter();
 
+  const sessionmanagement = () => {
+    if (sessionStorage.getItem("roll") !== null) {
+      if (sessionStorage.getItem("login") !== null) {
+        if (sessionStorage.getItem("roll") === "Student") {
+          router.push("/Student/Dashboard");
+          return;
+        } else if (sessionStorage.getItem("roll") === "Lecturer") {
+          router.push("/Lectuer/Dashboard");
+          return;
+        }
+      } else if (
+        sessionStorage.getItem("roll") === "Student" ||
+        sessionStorage.getItem("roll") === "Lecturer"
+      ) {
+        router.push("/login/details");
+        return
+      }
+    }
+  };
+
   const handleSelection = (type: string) => {
     setUserType(type);
-    console.log(`User selected: ${type}`);
+    sessionStorage.setItem("roll", type);
+    sessionmanagement();
   };
+
+  useEffect(() => {
+    sessionmanagement();
+  });
 
   return (
     <AuthGoogle>
@@ -50,7 +75,7 @@ const UserTypeSelection: React.FC = () => {
                 <button
                   className="absolute top-2 right-2 p-2 bg-gray-800 text-white rounded-full  hover:text-red-600"
                   onClick={() => {
-                    signOut();
+                    LogOff();
                   }}
                 >
                   <IoIosLogOut />
@@ -74,13 +99,13 @@ const UserTypeSelection: React.FC = () => {
                 <div className="space-y-4 w-full max-w-xs">
                   <button
                     className="flex justify-center items-center w-full px-8 md:px-12 py-2 bg-sky-700 rounded-[90px] text-xl md:text-2xl hover:bg-sky-600 transition-colors duration-300"
-                    onClick={() => handleSelection("student")}
+                    onClick={() => handleSelection("Student")}
                   >
                     Student
                   </button>
                   <button
                     className="flex justify-center items-center w-full px-8 md:px-12 py-2 bg-sky-700 rounded-[90px] text-xl md:text-2xl hover:bg-sky-600 transition-colors duration-300"
-                    onClick={() => handleSelection("lecturer")}
+                    onClick={() => handleSelection("Lecturer")}
                   >
                     Lecturer
                   </button>
