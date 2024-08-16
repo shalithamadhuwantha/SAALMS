@@ -3,12 +3,15 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { IoIosLogOut  } from "react-icons/io";
+import { signOut, useSession } from "next-auth/react";
+import { IoIosLogOut } from "react-icons/io";
 import { GrFormNext } from "react-icons/gr";
 import { LogOff } from "@/app/components/root/MangeLogin";
+import { Session } from "inspector";
 
 export default function DetailWindow() {
   const [step, setStep] = useState(1);
+  const { data: session, status } = useSession();
   const [university, setUniversity] = useState("");
   const [faculty, setFaculty] = useState("");
 
@@ -59,7 +62,7 @@ export default function DetailWindow() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <ul className="steps mb-10 items-center">
+          <ul className="steps mb-2 items-center">
             <li className="step step-primary">Register</li>
             <li className="step step-primary">Roll</li>
             <li className="step step-primary">Detail</li>
@@ -67,13 +70,12 @@ export default function DetailWindow() {
           </ul>
         </motion.div>
         <motion.div
-          className="w-full max-w-md mb-8"
+          className="w-full max-w-md "
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <div className="bg-slate-700 rounded-full h-3">
-        
             <motion.div
               className="bg-gradient-to-r from-sky-400 to-sky-600 h-3 rounded-full"
               style={{ width: `${progress}%` }}
@@ -83,7 +85,7 @@ export default function DetailWindow() {
             ></motion.div>
           </div>
           <motion.div
-            className="text-right mt-2 text-sm text-slate-400"
+            className="text-right text-sm text-slate-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
@@ -98,14 +100,14 @@ export default function DetailWindow() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-              <button
-                  className="absolute top-2 right-2 p-2 bg-gray-800 text-white rounded-full  hover:text-red-600"
-                  onClick={() => {
-                    LogOff();
-                  }}
-                >
-                  <IoIosLogOut />
-                </button>
+          <button
+            className="absolute top-2 right-2 p-2 bg-gray-800 text-white rounded-full  hover:text-red-600"
+            onClick={() => {
+              LogOff();
+            }}
+          >
+            <IoIosLogOut />
+          </button>
           <motion.h1
             className="text-3xl md:text-4xl font-bold mb-8 text-center text-white"
             initial={{ opacity: 0, y: -20 }}
@@ -161,18 +163,57 @@ export default function DetailWindow() {
                 key="summary"
                 {...fadeIn}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-center"
               >
-                <motion.h2
-                  className="text-2xl font-bold mb-6 text-sky-400"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
+                <motion.div
+                  className="flex items-center justify-center text-sm md:text-lg mb-4 text-slate-300"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8 }}
                 >
-                  Your Details
-                </motion.h2>
+                  <Image
+                    src={session?.user?.image || "/img/default.png"}
+                    width={200}
+                    height={200}
+                    alt="profile Logo"
+                    className="w-16 h-16 rounded-full"
+                  />
+                </motion.div>
+
                 <motion.p
-                  className="text-lg md:text-xl mb-4 text-slate-300"
+                  className="text-sm md:text-lg mb-4 text-slate-300"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8 }}
+                >
+                  Name:{" "}
+                  <span className="font-bold text-white">
+                    {session?.user?.name}
+                  </span>
+                </motion.p>
+
+                
+                <motion.p
+                  className="text-lg md:text-lg mb-4 text-slate-300"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8 }}
+                >
+                  Email:{" "}
+                  <span className="font-bold text-white">
+                    {session?.user?.email}
+                  </span>
+                </motion.p>
+                <motion.p
+                  className="text-lg md:text-lg mb-4 text-slate-300"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  Roll:{" "}
+                  <span className="font-bold text-white">{sessionStorage.getItem("roll")}</span>
+                </motion.p>
+                <motion.p
+                  className="text-lg md:text-lg mb-4 text-slate-300"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6 }}
@@ -181,7 +222,7 @@ export default function DetailWindow() {
                   <span className="font-bold text-white">{university}</span>
                 </motion.p>
                 <motion.p
-                  className="text-lg md:text-xl mb-4 text-slate-300"
+                  className="text-lg md:text-lg mb-4 text-slate-300"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.8 }}
@@ -193,7 +234,7 @@ export default function DetailWindow() {
             )}
           </AnimatePresence>
 
-          {step < 3 && (
+          {step <= 3 && (
             <motion.button
               className="w-full max-w-xs px-8 py-3 bg-gradient-to-r from-sky-500 to-sky-600 rounded-full text-xl font-semibold text-white hover:from-sky-600 hover:to-sky-700 transition-all duration-300 shadow-lg hover:shadow-xl"
               onClick={handleContinue}
@@ -204,7 +245,7 @@ export default function DetailWindow() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              Continue 
+              Continue
             </motion.button>
           )}
         </motion.div>
