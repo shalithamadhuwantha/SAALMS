@@ -62,7 +62,8 @@ const SideNav = () => {
         {/* Navigation items */}
         <nav className="flex flex-col space-y-4 flex-grow">
           <button
-            onClick={() => handleNavigation("/Student/Dashboard", "dashboard")}
+            // onClick={() => handleNavigation("/Student/Dashboard", "dashboard")}
+            onClick={() => router.push('/Student/Dashboard')}
             className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
               ${activeTab === "dashboard"
                 ? "bg-gray-700 text-sky-400"
@@ -74,7 +75,8 @@ const SideNav = () => {
           </button>
 
           <button
-            onClick={() => handleNavigation("/Student/Settings", "settings")}
+            // onClick={() => handleNavigation("/Student/Settings", "settings")}
+            onClick={() => router.push('/Student/Settings')}
             className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
               ${activeTab === "settings"
                 ? "bg-gray-700 text-sky-400"
