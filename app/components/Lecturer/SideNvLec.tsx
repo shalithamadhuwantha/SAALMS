@@ -9,12 +9,13 @@ import {
   MdClose,
   MdOutlineMenu,
 } from "react-icons/md";
-import { IoIosSettings } from "react-icons/io";
-import Dashboard from "./Dashboard/DashStdn";
-import Settings from "./Settings/SettingsStdn";
+import { IoIosSettings, IoMdPerson } from "react-icons/io";
+import DashboardLec from "./Dashboard/DashLec";
+import StudentsLec from "./Students/StudentsLec";
+import SettingsLec from "./Settings/SettingsLec";
 
 // Define a type for the possible tab values
-type TabType = "dashboard" | "settings";
+type TabType = "dashboard" | "students" | "settings";
 
 const SideNav = () => {
   const router = useRouter();
@@ -23,9 +24,11 @@ const SideNav = () => {
   const [activeTab, setActiveTab] = useState<TabType>("dashboard");
 
   useEffect(() => {
-    if (pathname.includes("/Student/Dashboard")) {
+    if (pathname.includes("/Lecturer/Dashboard")) {
       setActiveTab("dashboard");
-    } else if (pathname.includes("/Student/Settings")) {
+    } else if (pathname.includes("/Lecturer/Students")) {
+      setActiveTab("students");
+    } else if (pathname.includes("/Lecturer/Settings")) {
       setActiveTab("settings");
     }
   }, [pathname]);
@@ -62,8 +65,8 @@ const SideNav = () => {
         {/* Navigation items */}
         <nav className="flex flex-col space-y-4 flex-grow">
           <button
-            // onClick={() => handleNavigation("/Student/Dashboard", "dashboard")}
-            onClick={() => router.push('/Student/Dashboard')}
+            // onClick={() => handleNavigation("/Lecturer/Dashboard", "dashboard")}
+            onClick={() => router.push('/Lecturer/Dashboard')}
             className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
               ${activeTab === "dashboard"
                 ? "bg-gray-700 text-sky-400"
@@ -75,8 +78,20 @@ const SideNav = () => {
           </button>
 
           <button
-            // onClick={() => handleNavigation("/Student/Settings", "settings")}
-            onClick={() => router.push('/Student/Settings')}
+            // onClick={() => handleNavigation("/Lecturer/Students", "students")}
+            onClick={() => router.push('/Lecturer/Students')}
+            className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
+              ${activeTab === "students"
+                ? "bg-gray-700 text-sky-400"
+                : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
+              }`}
+          >
+            <IoMdPerson className="text-sky-500 text-2xl mr-4" />
+            Students
+          </button>
+          <button
+            // onClick={() => handleNavigation("/Lecturer/Settings", "settings")}
+            onClick={() => router.push('/Lecturer/Settings')}
             className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
               ${activeTab === "settings"
                 ? "bg-gray-700 text-sky-400"
@@ -118,8 +133,9 @@ const SideNav = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {activeTab === "dashboard" && <Dashboard />}
-          {activeTab === "settings" && <Settings />}
+          {activeTab === "dashboard" && <DashboardLec />}
+          {activeTab === "students" && <StudentsLec />}
+          {activeTab === "settings" && <SettingsLec />}
         </div>
       </div>
     </div>
