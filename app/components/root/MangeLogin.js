@@ -1,8 +1,15 @@
-import { signOut, useSession } from "next-auth/react";
+"use client";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
-export function LogOff() {
-  sessionStorage.removeItem("roll");
-  sessionStorage.removeItem("login");
-  signOut();
+
+// Log off users
+export async function LogOff() {
+  try {
+    sessionStorage.removeItem("roll");
+    sessionStorage.removeItem("login");
+    await signOut();
+  } catch (error) {
+    console.error("Error during sign out:", error);
+  }
 }
-
