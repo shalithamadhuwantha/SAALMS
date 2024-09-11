@@ -6,18 +6,18 @@ import { signIn } from "next-auth/react";
 
 const GoogleButton = () => {
   return (
-    <div className="flex flex-col text-2xl text-black max-md:max-w-full">
+    <div className="flex flex-col text-2xl text-black max-md:max-w-full ">
       <Image
         loading="lazy"
         src="/img/google.webp"
         width={251}
         height={83}
         alt="Google Logo"
-        className="object-contain self-center max-w-full aspect-[3.02] w-[251px] max-md:w-[180px]"
+        className="object-contain self-center max-w-full aspect-[3.02] w-[251px] max-md:w-[180px] "
       />
       <button
         onClick={() => signIn("google")}
-        className="flex gap-5 px-12 py-2 mt-12 bg-sky-700 rounded-[90px] max-md:px-5 max-md:mt-6 max-md:gap-2"
+        className="flex gap-5 px-12 py-2 mt-12 bg-sky-700 rounded-[90px] max-md:px-5 max-md:mt-6 max-md:gap-2 hover:bg-sky-800 hover:-translate-y-1 hover:scale-110 ease-in duration-300"
       >
         <Image
           loading="lazy"
@@ -27,7 +27,9 @@ const GoogleButton = () => {
           alt=""
           className="object-contain shrink-0 aspect-square w-[52px] max-md:w-[32px]"
         />
-        <span className="flex-auto my-auto text-white">Continue with Google</span>
+        <span className="flex-auto my-auto text-white">
+          Continue with Google
+        </span>
       </button>
     </div>
   );
