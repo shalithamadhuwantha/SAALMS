@@ -85,7 +85,7 @@ const UserValidDB: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     } else if (status === "unauthenticated") {
       signIn(); // Prompt login if unauthenticated
     }
-  }, [session, status, router]);
+  });
 
   if (isLoading) {
     return <div>Loading...</div>; // Show loading state while fetching data
