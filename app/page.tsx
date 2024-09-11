@@ -45,7 +45,7 @@ const App = () => {
                       <GoogleButton />
                     </div>
                     <p className="text-xs text-center lg:text-right lg:self-end text-gray-300 mt-4 lg:mt-5 lg:mr-11">
-                      Not Your Computer? Use Guest Mode to sign in Privately
+                      Not Your Computer? Use private Mode to sign in Privately
                     </p>
                   </div>
                   <p className="px-4 lg:px-10 lg:self-start text-xl lg:text-2xl  text-center mt-4 lg:mt-0 lg:text-left">

@@ -29,7 +29,7 @@ const UserTypeSelection: React.FC = () => {
         sessionStorage.getItem("roll") === "Lecturer"
       ) {
         router.push("/login/details");
-        return
+        return;
       }
     }
   };

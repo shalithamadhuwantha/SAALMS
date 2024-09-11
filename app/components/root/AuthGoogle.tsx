@@ -1,6 +1,9 @@
+"use client"
 import React from "react";
+import { useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import UserValidDB from "./EmailValidate";
 
 const AuthGoogle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { data: session, status } = useSession();
@@ -10,9 +13,15 @@ const AuthGoogle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
   if (status === "unauthenticated") {
     router.push("/");
+
     return null;
   }
-  return <>{children}</>;
+  return (
+    <UserValidDB>
+    
+      <>{children}</>
+    </UserValidDB>
+  );
 };
 
 export default AuthGoogle;
