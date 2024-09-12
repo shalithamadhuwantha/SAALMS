@@ -14,6 +14,8 @@ const UserTypeSelection: React.FC = () => {
   const [userType, setUserType] = useState<string | null>(null);
   const router = useRouter();
 
+ 
+
   const sessionmanagement = () => {
     if (sessionStorage.getItem("roll") !== null) {
       if (sessionStorage.getItem("login") !== null) {
@@ -43,6 +45,10 @@ const UserTypeSelection: React.FC = () => {
   useEffect(() => {
     sessionmanagement();
   });
+  
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
 
   return (
     <AuthGoogle>
