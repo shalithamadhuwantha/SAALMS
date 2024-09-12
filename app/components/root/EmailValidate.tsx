@@ -1,18 +1,18 @@
 "use client";
 import { useSession, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // Import the useRouter hook for client-side navigation
+import { useRouter } from "next/navigation";
 
 const UserValidDB: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { data: session, status } = useSession();
-  const router = useRouter(); // Initialize the router for navigation
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentURL, setCurrentURL] = useState("");
 
   useEffect(() => {
     const checkUserInDB = async () => {
-      const UserMail = session?.user?.email;
+      
+      const UserMail = session?.user?.email;  
 
       if (!UserMail) {
         setError("User not logged in or email not available");
@@ -21,7 +21,7 @@ const UserValidDB: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       }
 
       try {
-        // send API request and gather the database resulat and validity
+        // Send API request and gather the result and validity
         const response = await fetch("/api/usrCheack", {
           method: "POST",
           headers: {
@@ -32,42 +32,37 @@ const UserValidDB: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
         const data = await response.json();
 
-        console.log(window.location.pathname.split("/")[1]);
-
         if (response.status === 409) {
-          // cndition for is user is registed or login
-          if (window.location.pathname == "/login/details") {
+          // Check if the user is registered (Lecturer or Student)
+          if (window.location.pathname === "/login/details") {
             if (data.Type === "Student") {
-              router.push("/Student/Dashboard"); // Redirect to Student dashboard
+              router.push("/student/dashboard"); // Redirect to Student dashboard
             } else if (data.Type === "Lecturer") {
               router.push("/Lecturer/Dashboard"); // Redirect to Lecturer dashboard
             }
           } else {
-            // cheack the ather page visibiloity
-
+            // Check the user's role and whether they can access the page
+            const userRole = window.location.pathname.split("/")[1];
             if (
-              data.Type === "Student" &&
-              window.location.pathname.split("/")[1] == "Student"
+              (data.Type === "Student" && userRole === "student") ||
+              (data.Type === "Lecturer" && userRole === "lecturer")
             ) {
-              // for student visibilty
-              return { children };
-            } else if (
-              data.Type === "Lecturer" &&
-              window.location.pathname.split("/")[1] == "Lecturer"
-            ) {
-              //  for lecture page visibility
-              return { children };
+              setIsLoading(false);
+              return; // Allow access to the page
             } else {
-              // block the user athe return to the login
-              return router.push("/");
+              router.push("/"); // Redirect to home page if user doesn't have access
             }
           }
         } else if (response.status === 200) {
-          // If the user is new and can register
-          if (window.location.pathname == "/login/details" || window.location.pathname == "/login/roll" ) {
-            return ;
-          }else{
-            return router.push("/");
+          // New user who can register, allow on specific pages
+          if (
+            window.location.pathname === "/login/details" ||
+            window.location.pathname === "/login/roll"
+          ) {
+            setIsLoading(false);
+            return;
+          } else {
+            router.push("/"); // Redirect to home page for other cases
           }
         } else {
           setError(data.message); // Handle other errors
@@ -83,20 +78,19 @@ const UserValidDB: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     if (session) {
       checkUserInDB();
     } else if (status === "unauthenticated") {
-      signIn(); // Prompt login if unauthenticated
+      signIn(); // Redirect to sign in if unauthenticated
     }
-  });
+  }, [session, status, router]); // Properly add dependencies
 
   if (isLoading) {
-    return <div>Loading...</div>; // Show loading state while fetching data
+    return <div>Loading...</div>; // Show loading state
   }
 
   if (error) {
-    return <div>{error}</div>; // Show error message if error occurs
+    return <div>{error}</div>; // Show error if any
   }
 
-  // Render children content if no redirection is needed
-  return <>{children}</>;
+  return <>{children}</>; // Render children content if validation is passed
 };
 
 export default UserValidDB;

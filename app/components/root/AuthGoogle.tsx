@@ -1,27 +1,25 @@
-"use client"
+"use client";
 import React from "react";
-import { useState } from "react";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import UserValidDB from "./EmailValidate";
 
 const AuthGoogle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
-  if (status === "unauthenticated") {
-    router.push("/");
 
+  if (status === "loading") {
+    return <p>Loading...</p>; // Show loading state while session is being loaded
+  }
+
+  if (status === "unauthenticated") {
+    // Avoid calling router.push directly in render phase, use useEffect instead
+    router.push("/"); // Redirect to homepage if not authenticated
     return null;
   }
-  return (
-    <UserValidDB>
-    
-      <>{children}</>
-    </UserValidDB>
-  );
+
+  // If the session exists, validate the user
+  return <UserValidDB>{children}</UserValidDB>;
 };
 
 export default AuthGoogle;
