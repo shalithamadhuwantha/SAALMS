@@ -9,11 +9,7 @@ const DashboardLec = () => {
    type LocationList = {
       items: string[]
    }
-   // Mocked data for the current lecture and lecturer
-   const [value, setValue] = useState('ICT Lab');
-   const locations = [
-      "ICT Lab", "Lecture A1", "Science Lab b1"
-   ]
+
 
    return (
      <>

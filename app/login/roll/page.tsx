@@ -14,7 +14,7 @@ const UserTypeSelection: React.FC = () => {
   const [userType, setUserType] = useState<string | null>(null);
   const router = useRouter();
 
- 
+  
 
   const sessionmanagement = () => {
     if (sessionStorage.getItem("roll") !== null) {
