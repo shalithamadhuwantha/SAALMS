@@ -225,11 +225,11 @@ const LecturerDashboard: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen text-white p-6">
+    <div className="bg-gray-900 min-h-screen text-white p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         <header className="mb-8 flex flex-col items-center">
-          <h1 className="text-4xl font-bold text-indigo-300 mb-6">Lecturer Dashboard</h1>
-          <div className="flex flex-wrap justify-center gap-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-indigo-300 mb-6 text-center">Lecturer Dashboard</h1>
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
             {[
               { icon: MdClass, label: 'Create Class', action: 'create-class', color: 'bg-blue-600 hover:bg-blue-700' },
               { icon: MdQrCode, label: 'QR Attendance', action: 'qr-attendance', color: 'bg-purple-600 hover:bg-purple-700' },
@@ -239,36 +239,36 @@ const LecturerDashboard: React.FC = () => {
               <button
                 key={button.action}
                 onClick={() => handleAction(button.action)}
-                className={`${button.color} text-white px-5 py-3 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-opacity-50 shadow-xl text-sm sm:text-base flex items-center justify-center space-x-2 ${currentAction === button.action ? 'ring-2 ring-white' : ''}`}
+                className={`${button.color} text-white px-3 sm:px-5 py-2 sm:py-3 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-opacity-50 shadow-xl text-xs sm:text-sm flex items-center justify-center space-x-1 sm:space-x-2 ${currentAction === button.action ? 'ring-2 ring-white' : ''}`}
               >
-                <button.icon className="text-xl sm:text-2xl" />
-                <span>{button.label}</span>
+                <button.icon className="text-lg sm:text-xl" />
+                <span className="hidden sm:inline">{button.label}</span>
               </button>
             ))}
           </div>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
             {renderActionContent()}
           </div>
 
-          <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
+          <div className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
             <h2 className="text-xl font-semibold mb-4">Your Classes</h2>
             <div className="space-y-4">
               {classes.map((cls) => (
                 <div 
                   key={cls.id} 
-                  className={`flex items-center justify-between bg-gray-700 p-4 rounded-lg cursor-pointer transition-colors duration-300 ${selectedClass === cls.id ? 'ring-2 ring-indigo-500' : 'hover:bg-gray-600'}`}
+                  className={`flex items-center justify-between bg-gray-700 p-3 sm:p-4 rounded-lg cursor-pointer transition-colors duration-300 ${selectedClass === cls.id ? 'ring-2 ring-indigo-500' : 'hover:bg-gray-600'}`}
                   onClick={() => setSelectedClass(cls.id)}
                 >
                   <div>
-                    <h3 className="font-semibold">{cls.name}</h3>
-                    <p className="text-sm text-gray-400">{cls.students} students</p>
+                    <h3 className="font-semibold text-sm sm:text-base">{cls.name}</h3>
+                    <p className="text-xs sm:text-sm text-gray-400">{cls.students} students</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-semibold text-indigo-400">{cls.attendance}%</p>
-                    <p className="text-sm text-gray-400">Attendance</p>
+                    <p className="text-base sm:text-lg font-semibold text-indigo-400">{cls.attendance}%</p>
+                    <p className="text-xs sm:text-sm text-gray-400">Attendance</p>
                   </div>
                 </div>
               ))}
