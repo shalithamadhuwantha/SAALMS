@@ -3,5 +3,6 @@ import DashboardLec from '../../components/Lecturer/Dashboard/DashLec';
 
 
 export default function DashboardPage() {
-    return <AuthGoogle> <DashboardLec /> </AuthGoogle>;
+    return  <DashboardLec /> ;
+    // return <AuthGoogle> <DashboardLec /> </AuthGoogle>;
 }

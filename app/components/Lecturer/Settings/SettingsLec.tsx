@@ -81,7 +81,7 @@ const LecturerSettings = () => {
                       type={field.name === 'email' ? 'email' : field.name === 'mobile' ? 'tel' : 'text'}
                       id={field.name}
                       name={field.name}
-                      value={profile[field.name]}
+                      value={profile[field.name as keyof typeof profile]}
                       onChange={handleInputChange}
                       disabled={!isEditing || !field.editable}
                       className={`bg-gray-700 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 ease-in-out shadow-inner text-sm sm:text-base w-full ${!field.editable ? 'cursor-not-allowed opacity-60' : ''}`}
