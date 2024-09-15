@@ -15,7 +15,10 @@ const Settings = () => {
     mobile: '+1234567890'
   });
 
-  const handleInputChange = (e: { target: { name: any; value: any; }; }) => {
+  // Define a type for the keys of profile
+  type ProfileKey = keyof typeof profile;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProfile(prevProfile => ({
       ...prevProfile,
@@ -23,7 +26,7 @@ const Settings = () => {
     }));
   };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsEditing(false);
     console.log('Updated profile:', profile);
@@ -65,12 +68,12 @@ const Settings = () => {
             <form onSubmit={handleSubmit} className="flex-grow">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6">
                 {[
-                  { icon: MdPersonOutline, name: 'name', label: 'Name', color: 'text-blue-400', editable: true },
-                  { icon: MdEmail, name: 'email', label: 'Email', color: 'text-green-400', editable: true },
-                  { icon: MdSchool, name: 'studentId', label: 'Student ID', color: 'text-purple-400', editable: false },
-                  { icon: MdBusinessCenter, name: 'department', label: 'Department', color: 'text-pink-400', editable: true },
-                  { icon: MdDateRange, name: 'year', label: 'Year', color: 'text-yellow-400', editable: true },
-                  { icon: MdPhone, name: 'mobile', label: 'Mobile', color: 'text-orange-400', editable: true },
+                  { icon: MdPersonOutline, name: 'name' as ProfileKey, label: 'Name', color: 'text-blue-400', editable: true },
+                  { icon: MdEmail, name: 'email' as ProfileKey, label: 'Email', color: 'text-green-400', editable: true },
+                  { icon: MdSchool, name: 'studentId' as ProfileKey, label: 'Student ID', color: 'text-purple-400', editable: false },
+                  { icon: MdBusinessCenter, name: 'department' as ProfileKey, label: 'Department', color: 'text-pink-400', editable: true },
+                  { icon: MdDateRange, name: 'year' as ProfileKey, label: 'Year', color: 'text-yellow-400', editable: true },
+                  { icon: MdPhone, name: 'mobile' as ProfileKey, label: 'Mobile', color: 'text-orange-400', editable: true },
                 ].map((field) => (
                   <div key={field.name} className="flex flex-col space-y-1 sm:space-y-2 group">
                     <label htmlFor={field.name} className="text-xs sm:text-sm font-medium text-gray-400 flex items-center space-x-2">
