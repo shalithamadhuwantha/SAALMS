@@ -234,7 +234,7 @@ const AddStudent: React.FC = () => {
             <button
                onClick={handleAddStudent}
                disabled={isAddButtonDisabled}
-               className={`font-bold py-2 px-4 rounded-lg mt-4 btn ${isAddButtonDisabled
+               className={`font-bold py-2 text-indigo-50 px-4 rounded-lg mt-4 btn ${isAddButtonDisabled
                   ? 'btn-disabled'
                   : 'btn-active btn-primary'
                   }`}
@@ -254,7 +254,7 @@ const AddStudent: React.FC = () => {
                value={editingStudent.name}
                onChange={(e) => setEditingStudent({ ...editingStudent, name: e.target.value })}
                placeholder="Name"
-               className="p-2 mb-2 w-full border border-gray-400 rounded-lg bg-slate-800"
+               className="p-2 mb-2 w-full border rounded-lg bg-slate-800 input input-bordered input-primary"
             />
             <input
                type="email"
@@ -263,7 +263,7 @@ const AddStudent: React.FC = () => {
                   setEditingStudent({ ...editingStudent, email: e.target.value })
                }
                placeholder="Email"
-               className="p-2 mb-2 w-full border border-gray-400 rounded-lg bg-slate-800"
+               className="p-2 mb-2 w-full border rounded-lg bg-slate-800 input input-bordered input-primary"
             />
             <input
                type="text"
@@ -272,12 +272,12 @@ const AddStudent: React.FC = () => {
                   setEditingStudent({ ...editingStudent, registrationNumber: e.target.value })
                }
                placeholder="Registration Number"
-               className="p-2 mb-2 w-full border border-gray-400 rounded-lg bg-slate-800"
+               className="p-2 mb-2 w-full border rounded-lg bg-slate-800 input input-bordered input-primary"
             />
             <button
                onClick={handleUpdateStudent}
                disabled={isUpdateButtonDisabled}
-               className={`font-bold py-2 px-4 rounded-lg mt-4 btn ${isUpdateButtonDisabled ? 'btn-disabled' : 'btn-active btn-primary'
+               className={`font-bold text-indigo-50 py-2 px-4 rounded-lg mt-4 btn ${isUpdateButtonDisabled ? 'btn-disabled' : 'btn-active btn-primary'
                   }`}
             >
                Update Student
