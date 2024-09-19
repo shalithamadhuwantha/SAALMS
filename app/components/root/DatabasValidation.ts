@@ -2,8 +2,6 @@
 import { useSession, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import LoadingSpinner from "./LoadingSpinner";
-
 
 // Define the return type of the validation function
 interface ValidationResult {
@@ -19,13 +17,7 @@ function UseDatabaseValidation(): ValidationResult {
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
   const [isValid, setIsValid] = useState(false); // Validation status
-  const [loading, setLoading] = useState(true); 
-
-
-  useEffect(() => {
-    setLoading(false); // Simulate loading finished
-  }, []);
-
+  
 
   useEffect(() => {
     const checkUserInDB = async () => {
