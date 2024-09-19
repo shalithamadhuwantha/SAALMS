@@ -1,8 +1,7 @@
-import AuthGoogle from '@/app/components/root/AuthGoogle';
-import DashboardLec from '../../components/Lecturer/Dashboard/DashLec';
+import StudentDashboard from '@/app/components/Lecturer/Dashboard/DashFirst';
+
 
 
 export default function DashboardPage() {
-    return  <DashboardLec /> ;
-    // return <AuthGoogle> <DashboardLec /> </AuthGoogle>;
+    return <StudentDashboard />;
 }

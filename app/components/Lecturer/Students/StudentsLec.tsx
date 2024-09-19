@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import { FaUserPlus, FaUsers } from 'react-icons/fa';
+import { CgPushUp } from "react-icons/cg";
 
 interface Student {
    id: number;
@@ -10,17 +12,12 @@ interface Student {
    registrationNumber: string;
 }
 
-const Modal = ({
-   isOpen,
-   onClose,
-   title,
-   children,
-}: {
+const Modal: React.FC<{
    isOpen: boolean;
    onClose: () => void;
    title: string;
    children: React.ReactNode;
-}) => {
+}> = ({ isOpen, onClose, title, children }) => {
    return (
       <div
          className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center 
@@ -45,7 +42,7 @@ const Modal = ({
    );
 };
 
-const AttendingSystem = () => {
+const AddStudent: React.FC = () => {
    const [students, setStudents] = useState<Student[]>([]);
    const [newStudent, setNewStudent] = useState<Student>({
       id: 0,
@@ -64,9 +61,13 @@ const AttendingSystem = () => {
    const [isBulkUploadModalOpen, setIsBulkUploadModalOpen] = useState(false);
 
    const handleAddStudent = () => {
-      setStudents([...students, { ...newStudent, id: students.length + 1 }]);
-      setNewStudent({ id: 0, name: "", email: "", registrationNumber: "" });
-      setIsAddModalOpen(false);
+      if (newStudent.name && newStudent.email && newStudent.registrationNumber) {
+         setStudents([...students, { ...newStudent, id: students.length + 1 }]);
+         setNewStudent({ id: 0, name: "", email: "", registrationNumber: "" });
+         setIsAddModalOpen(false);
+      } else {
+         console.log('All fields must be filled');
+      }
    };
 
    const handleDeleteStudent = (id: number) => {
@@ -85,19 +86,23 @@ const AttendingSystem = () => {
    };
 
    const handleUpdateStudent = () => {
-      const updatedStudents = students.map((student) =>
-         student.id === editingStudent.id ? editingStudent : student
-      );
-      setStudents(updatedStudents);
-      setIsEditModalOpen(false);
+      if (editingStudent.name && editingStudent.email && editingStudent.registrationNumber) {
+         const updatedStudents = students.map((student) =>
+            student.id === editingStudent.id ? editingStudent : student
+         );
+         setStudents(updatedStudents);
+         setIsEditModalOpen(false);
+      } else {
+         console.log('All fields must be filled');
+      }
    };
 
    const handleBulkUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (file) {
          const reader = new FileReader();
-         reader.onload = () => {
-            const csvData = reader.result as string;
+         reader.onload = (e) => {
+            const csvData = e.target?.result as string;
             const csvLines = csvData.split("\n");
             const newStudents: Student[] = [];
             csvLines.forEach((line, index) => {
@@ -119,31 +124,42 @@ const AttendingSystem = () => {
       setIsBulkUploadModalOpen(false);
    };
 
+   const isAddButtonDisabled = !newStudent.name || !newStudent.email || !newStudent.registrationNumber;
+   const isUpdateButtonDisabled = !editingStudent.name || !editingStudent.email || !editingStudent.registrationNumber;
+
    return (
       <div className="container p-4 lg:p-8 lg:pt-2">
-         <h1 className="text-xl font-semibold mb-4">Student Registration</h1>
-         <div className="my-6 flex flex-wrap gap-2">
-            <button
-               onClick={() => setIsAddModalOpen(true)}
-               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex-1 sm:flex-none"
-            >
-               Add Student
-            </button>
-            <button
-               onClick={() => setIsBulkUploadModalOpen(true)}
-               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg flex-1 sm:flex-none"
-            >
-               Add Students in Bulk
-            </button>
-         </div>
+         <header className="flex flex-col items-center">
+            <h1 className="text-4xl font-bold text-indigo-300"> Student Registration </h1>
+            <div className="my-6 flex flex-wrap gap-4">
+               <button
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="text-white px-14 py-3 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none font-semibold
+                     focus:ring-2 focus:ring-opacity-50 shadow-xl text-sm sm:text-base flex items-center justify-center space-x-2 bg-blue-500 hover:bg-blue-700"
+               >
+                  <FaUserPlus className="mr-3 text-xl sm:text-2xl" />
+                  Add Student
+               </button>
+               <button
+                  onClick={() => setIsBulkUploadModalOpen(true)}
+                  className="bg-green-500 hover:bg-green-700 text-white px-7 py-3 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none 
+                     focus:ring-2 focus:ring-opacity-50 shadow-xl text-sm sm:text-base flex items-center justify-center space-x-2 font-semibold"
+               >
+                  <FaUsers className="mr-3 text-xl sm:text-2xl" />
+                  Add Students in Bulk
+               </button>
+            </div>
+         </header>
 
-         {/* Student List in a Card with Gradient */}
+         {/* Student List */}
          <div className="card w-full bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 opacity-80 shadow-xl p-4 text-white">
             <div className="card-body">
                <div className="flex flex-row">
                   <h2 className="card-title"> Student List </h2>
-                  <button onClick={console.log} className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-lg ml-auto">
+                  <button onClick={() => console.log("Push button clicked")} className="bg-amber-500 hover:bg-amber-700 ml-auto text-white px-5 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none 
+                     focus:ring-2 focus:ring-opacity-50 shadow-xl text-sm sm:text-base flex items-center justify-center space-x-2 font-semibold">
                      Push
+                     <CgPushUp className="ml-3 text-xl sm:text-xl" />
                   </button>
                </div>
                <div className="overflow-x-auto">
@@ -197,14 +213,14 @@ const AttendingSystem = () => {
                value={newStudent.name}
                onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
                placeholder="Name"
-               className="p-2 mb-2 w-full border border-gray-400 rounded-lg bg-slate-800"
+               className="p-2 mb-2 w-full border rounded-lg bg-slate-800 input input-bordered input-primary"
             />
             <input
                type="email"
                value={newStudent.email}
                onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })}
                placeholder="Email"
-               className="p-2 mb-2 w-full border border-gray-400 rounded-lg bg-slate-800"
+               className="p-2 mb-2 w-full border rounded-lg bg-slate-800 input input-bordered input-primary"
             />
             <input
                type="text"
@@ -213,11 +229,15 @@ const AttendingSystem = () => {
                   setNewStudent({ ...newStudent, registrationNumber: e.target.value })
                }
                placeholder="Registration Number"
-               className="p-2 mb-2 w-full border border-gray-400 rounded-lg bg-slate-800"
+               className="p-2 mb-2 w-full border rounded-lg bg-slate-800 input input-bordered input-primary"
             />
             <button
                onClick={handleAddStudent}
-               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg mt-4"
+               disabled={isAddButtonDisabled}
+               className={`font-bold py-2 text-indigo-50 px-4 rounded-lg mt-4 btn ${isAddButtonDisabled
+                  ? 'btn-disabled'
+                  : 'btn-active btn-primary'
+                  }`}
             >
                Add Student
             </button>
@@ -234,7 +254,7 @@ const AttendingSystem = () => {
                value={editingStudent.name}
                onChange={(e) => setEditingStudent({ ...editingStudent, name: e.target.value })}
                placeholder="Name"
-               className="p-2 mb-2 w-full border border-gray-400 rounded-lg bg-slate-800"
+               className="p-2 mb-2 w-full border rounded-lg bg-slate-800 input input-bordered input-primary"
             />
             <input
                type="email"
@@ -243,7 +263,7 @@ const AttendingSystem = () => {
                   setEditingStudent({ ...editingStudent, email: e.target.value })
                }
                placeholder="Email"
-               className="p-2 mb-2 w-full border border-gray-400 rounded-lg bg-slate-800"
+               className="p-2 mb-2 w-full border rounded-lg bg-slate-800 input input-bordered input-primary"
             />
             <input
                type="text"
@@ -252,11 +272,13 @@ const AttendingSystem = () => {
                   setEditingStudent({ ...editingStudent, registrationNumber: e.target.value })
                }
                placeholder="Registration Number"
-               className="p-2 mb-2 w-full border border-gray-400 rounded-lg bg-slate-800"
+               className="p-2 mb-2 w-full border rounded-lg bg-slate-800 input input-bordered input-primary"
             />
             <button
                onClick={handleUpdateStudent}
-               className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg mt-4"
+               disabled={isUpdateButtonDisabled}
+               className={`font-bold text-indigo-50 py-2 px-4 rounded-lg mt-4 btn ${isUpdateButtonDisabled ? 'btn-disabled' : 'btn-active btn-primary'
+                  }`}
             >
                Update Student
             </button>
@@ -272,11 +294,11 @@ const AttendingSystem = () => {
                type="file"
                accept=".csv"
                onChange={handleBulkUpload}
-               className="p-2 mb-2 w-full border bg-slate-800 rounded-lg"
+               className="p-2 mb-2 border bg-slate-800 rounded-lg file-input file-input-bordered file-input-primary w-full max-w-xs"
             />
          </Modal>
       </div>
    );
 };
 
-export default AttendingSystem;
+export default AddStudent;
