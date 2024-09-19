@@ -17,6 +17,7 @@ import {
 import { FaUniversity } from "react-icons/fa";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { LogOff } from "../../root/MangeLogin";
 
 const Settings = () => {
   const { data: session, status } = useSession();
@@ -287,7 +288,7 @@ const Settings = () => {
 
           <div className="text-center">
             <button
-              onClick={() => signOut()}
+              onClick={() => LogOff()}
               className="bg-red-600 hover:bg-red-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 shadow-lg"
             >
               Sign out
