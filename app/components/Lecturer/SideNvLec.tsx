@@ -90,8 +90,7 @@ const SideNav = () => {
 
         <div className="pt-6 border-t border-gray-700 w-5/6 absolute inset-x-0 bottom-5 ml-4">
           <button
-            className="flex justify-center items-center bg-red-600 text-white p-3 rounded-full w-full
-            hover:bg-red-800 transition shadow-md hover:shadow-lg hover:scale-105"
+            className="flex justify-center items-center bg-red-600 text-white p-3 rounded-full w-full hover:bg-red-800 transition shadow-md hover:shadow-lg hover:scale-105"
             onClick={LogOff}
           >
             <MdOutlineLogout className="text-2xl mr-2" />
