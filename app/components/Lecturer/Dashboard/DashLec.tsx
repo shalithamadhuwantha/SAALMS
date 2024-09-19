@@ -1,7 +1,9 @@
 "use client";
 
+
+import Image from "next/image";
 import React, { useState, useEffect } from 'react';
-import { MdClass, MdQrCode, MdPictureAsPdf, MdSchedule, MdDownload } from 'react-icons/md';
+import { MdQrCode, MdPictureAsPdf, MdSchedule, MdDownload, MdPersonAdd } from 'react-icons/md';
 
 interface Class {
   id: number;
@@ -11,9 +13,7 @@ interface Class {
 }
 
 const LecturerDashboard: React.FC = () => {
-  const [currentAction, setCurrentAction] = useState<string>('create-class');
-  const [className, setClassName] = useState<string>('');
-  const [enrollLink, setEnrollLink] = useState<string>('');
+  const [currentAction, setCurrentAction] = useState<string>('qr-attendance');
   const [selectedClass, setSelectedClass] = useState<number | null>(null);
   const [qrValue, setQrValue] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
@@ -37,13 +37,6 @@ const LecturerDashboard: React.FC = () => {
     setCurrentAction(action);
   };
 
-  const handleCreateClass = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log({ className, enrollLink });
-    setClassName('');
-    setEnrollLink('');
-  };
-
   const handleGenerateReport = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Generating report for month:", selectedMonth);
@@ -56,48 +49,12 @@ const LecturerDashboard: React.FC = () => {
 
   const renderActionContent = () => {
     switch (currentAction) {
-      case 'create-class':
-        return (
-          <>
-            <h2 className="text-xl font-semibold mb-4">Create New Class</h2>
-            <form onSubmit={handleCreateClass} className="space-y-4">
-              <div>
-                <label htmlFor="className" className="block text-sm font-medium text-gray-400">Class Name</label>
-                <input
-                  type="text"
-                  id="className"
-                  value={className}
-                  onChange={(e) => setClassName(e.target.value)}
-                  className="mt-1 block w-full rounded-md bg-gray-700 border-transparent focus:border-indigo-500 focus:bg-gray-600 focus:ring-0 text-white"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="enrollLink" className="block text-sm font-medium text-gray-400">Enroll Link</label>
-                <input
-                  type="text"
-                  id="enrollLink"
-                  value={enrollLink}
-                  onChange={(e) => setEnrollLink(e.target.value)}
-                  className="mt-1 block w-full rounded-md bg-gray-700 border-transparent focus:border-indigo-500 focus:bg-gray-600 focus:ring-0 text-white"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors duration-300"
-              >
-                Create Class
-              </button>
-            </form>
-          </>
-        );
       case 'qr-attendance':
         return (
           <>
             <h2 className="text-xl font-semibold mb-4">QR Attendance</h2>
             <div className="flex justify-center items-center h-64">
-              <img src="/api/placeholder/200/200" alt="QR Code Placeholder" className="border-4 border-white" />
+              <Image src="/img/logo.png" width={40} height={40} alt="logo" className="w-8 h-8" />
             </div>
             <p className="text-center mt-4 text-sm text-gray-400">
               Scan this QR code to mark attendance
@@ -219,6 +176,8 @@ const LecturerDashboard: React.FC = () => {
             </form>
           </>
         );
+      case 'add-student':
+        return null;
       default:
         return null;
     }
@@ -231,10 +190,10 @@ const LecturerDashboard: React.FC = () => {
           <h1 className="text-3xl sm:text-4xl font-bold text-indigo-300 mb-6 text-center">Lecturer Dashboard</h1>
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
             {[
-              { icon: MdClass, label: 'Create Class', action: 'create-class', color: 'bg-blue-600 hover:bg-blue-700' },
               { icon: MdQrCode, label: 'QR Attendance', action: 'qr-attendance', color: 'bg-purple-600 hover:bg-purple-700' },
               { icon: MdPictureAsPdf, label: 'Generate Report', action: 'generate-report', color: 'bg-red-600 hover:bg-red-700' },
               { icon: MdSchedule, label: 'Class Schedule', action: 'class-schedule', color: 'bg-yellow-600 hover:bg-yellow-700' },
+              { icon: MdPersonAdd, label: 'Add Student', action: 'add-student', color: 'bg-green-600 hover:bg-green-700' },
             ].map((button) => (
               <button
                 key={button.action}
@@ -248,33 +207,35 @@ const LecturerDashboard: React.FC = () => {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
-            {renderActionContent()}
-          </div>
+        {currentAction !== 'add-student' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
+              {renderActionContent()}
+            </div>
 
-          <div className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">Your Classes</h2>
-            <div className="space-y-4">
-              {classes.map((cls) => (
-                <div 
-                  key={cls.id} 
-                  className={`flex items-center justify-between bg-gray-700 p-3 sm:p-4 rounded-lg cursor-pointer transition-colors duration-300 ${selectedClass === cls.id ? 'ring-2 ring-indigo-500' : 'hover:bg-gray-600'}`}
-                  onClick={() => setSelectedClass(cls.id)}
-                >
-                  <div>
-                    <h3 className="font-semibold text-sm sm:text-base">{cls.name}</h3>
-                    <p className="text-xs sm:text-sm text-gray-400">{cls.students} students</p>
+            <div className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">Your Classes</h2>
+              <div className="space-y-4">
+                {classes.map((cls) => (
+                  <div 
+                    key={cls.id} 
+                    className={`flex items-center justify-between bg-gray-700 p-3 sm:p-4 rounded-lg cursor-pointer transition-colors duration-300 ${selectedClass === cls.id ? 'ring-2 ring-indigo-500' : 'hover:bg-gray-600'}`}
+                    onClick={() => setSelectedClass(cls.id)}
+                  >
+                    <div>
+                      <h3 className="font-semibold text-sm sm:text-base">{cls.name}</h3>
+                      <p className="text-xs sm:text-sm text-gray-400">{cls.students} students</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-base sm:text-lg font-semibold text-indigo-400">{cls.attendance}%</p>
+                      <p className="text-xs sm:text-sm text-gray-400">Attendance</p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-base sm:text-lg font-semibold text-indigo-400">{cls.attendance}%</p>
-                    <p className="text-xs sm:text-sm text-gray-400">Attendance</p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
