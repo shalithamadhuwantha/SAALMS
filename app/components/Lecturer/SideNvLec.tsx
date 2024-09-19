@@ -10,11 +10,13 @@ import {
   MdOutlineMenu,
 } from "react-icons/md";
 import { IoIosSettings, IoMdPerson } from "react-icons/io";
-import DashboardLec from "./Dashboard/DashLec";
+// import DashboardLec from "./Dashboard/DashLec";
+
 import StudentsLec from "./Students/StudentsLec";
 import SettingsLec from "./Settings/SettingsLec";
 import { LogOff } from "../root/MangeLogin";
 import LoadingSpinner from "../root/LoadingSpinner";
+import StudentDashboard from "./Dashboard/DashFirst";
 
 // Define a type for the possible tab values
 type TabType = "dashboard" | "students" | "settings";
@@ -140,7 +142,7 @@ const SideNav = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {activeTab === "dashboard" && <DashboardLec />}
+          {activeTab === "dashboard" && <StudentDashboard />}
           {activeTab === "students" && <StudentsLec />}
           {activeTab === "settings" && <SettingsLec />}
         </div>
