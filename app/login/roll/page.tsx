@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import AuthGoogle from "@/app/components/root/AuthGoogle";
 import { LogOff } from "@/app/components/root/MangeLogin";
 
-
 const UserTypeSelection: React.FC = () => {
   const { data: session, status } = useSession();
   const [userType, setUserType] = useState<string | null>(null);
@@ -43,6 +42,10 @@ const UserTypeSelection: React.FC = () => {
   useEffect(() => {
     sessionmanagement();
   });
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
 
   return (
     <AuthGoogle>

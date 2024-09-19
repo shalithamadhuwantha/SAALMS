@@ -19,15 +19,15 @@ export async function POST(request) {
     // student exit validation
     if (studentExists) {
       return NextResponse.json(
-        { status: "409", Type: "Student" },
-        { status: 409 }
+        { status: "202", Type: "Student" },
+        { status: 202 }
       );
 
     // lecturer exit validation 
     } else if (lecturerExists) {
       return NextResponse.json(
-        { status: "409", Type: "Lecturer" },
-        { status: 409 }
+        { status: "202", Type: "Lecturer" },
+        { status: 202 }
       );
 
     //   email not found
