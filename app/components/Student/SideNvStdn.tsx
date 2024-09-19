@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import {
@@ -14,7 +13,8 @@ import { IoIosSettings } from "react-icons/io";
 import Dashboard from "./Dashboard/DashStdn";
 import Settings from "./Settings/SettingsStdn";
 import { LogOff } from "../root/MangeLogin";
-
+import LoadingSpinner from "../root/LoadingSpinner";
+// import LoadingSpinner from "./LoadingSpinner";
 
 // Define a type for the possible tab values
 type TabType = "dashboard" | "settings";
@@ -24,8 +24,11 @@ const SideNav = () => {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("dashboard");
-  const { data: session, status } = useSession();
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    setLoading(false); // Simulate loading finished
+  }, []);
 
   useEffect(() => {
     if (pathname.includes("/Student/Dashboard")) {
@@ -47,6 +50,7 @@ const SideNav = () => {
 
   return (
     <div className="flex h-screen w-screen bg-gray-900">
+      {loading && <LoadingSpinner />}
       {/* Sidebar */}
       <div
         className={`fixed inset-0 bg-gradient-to-b from-gray-900 to-gray-800 p-6 z-50 shadow-xl transition-transform 
@@ -67,8 +71,7 @@ const SideNav = () => {
         {/* Navigation items */}
         <nav className="flex flex-col space-y-4 flex-grow">
           <button
-            // onClick={() => handleNavigation("/Student/Dashboard", "dashboard")}
-            onClick={() => router.push('/Student/Dashboard')}
+            onClick={() => handleNavigation("/Student/Dashboard", "dashboard")}
             className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
               ${activeTab === "dashboard"
                 ? "bg-gray-700 text-sky-400"
@@ -80,8 +83,7 @@ const SideNav = () => {
           </button>
 
           <button
-            // onClick={() => handleNavigation("/Student/Settings", "settings")}
-            onClick={() => router.push('/Student/Settings')}
+            onClick={() => handleNavigation("/Student/Settings", "settings")}
             className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
               ${activeTab === "settings"
                 ? "bg-gray-700 text-sky-400"
@@ -97,18 +99,17 @@ const SideNav = () => {
         <div className="pt-6 border-t border-gray-700 w-5/6 absolute inset-x-0 bottom-5 ml-4">
           <button
             className="flex justify-center items-center bg-red-600 text-white p-3 rounded-full w-full
-            hover:bg-red-800 transition shadow-md hover:shadow-lg hover:scale-105 "
+            hover:bg-red-800 transition shadow-md hover:shadow-lg hover:scale-105"
             onClick={LogOff}
-
           >
             <MdOutlineLogout className="text-2xl mr-2" />
             Logout
           </button>
         </div>
       </div>
-              
+
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden ">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex items-center justify-between p-4 bg-gray-900">
           <button className="md:hidden" onClick={handleSidebarToggle}>
             <MdOutlineMenu className="text-gray-200 text-2xl" />
@@ -116,10 +117,10 @@ const SideNav = () => {
           <h2 className="text-2xl font-bold text-white">
             {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
           </h2>
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={()=>router.push("/Student/Settings")}>
-            <p className="text-gray-200">{session?.user?.name}</p>
+          <div className="flex items-center space-x-3">
+            <p className="text-gray-200">John</p>
             <div className="w-8 h-8 rounded-full overflow-hidden">
-              <Image src={session?.user?.image || "/img/logo.png"} width={40} height={40} alt="logo" className="w-8 h-8" />
+              <Image src="/img/logo.png" width={40} height={40} alt="logo" className="w-8 h-8" />
             </div>
           </div>
         </div>

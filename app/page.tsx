@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React,  { useState, useEffect } from "react";
 import GoogleButton from "./components/Login/GoogleButton";
 import Footer from "./components/Login/Footer";
 import styles from "./login.module.css";
@@ -7,16 +7,27 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import LoadingSpinner from "./components/root/LoadingSpinner";
+
 
 const App = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [loading, setLoading] = useState(true); 
+
+
+  useEffect(() => {
+    setLoading(false); // Simulate loading finished
+  }, []);
+  
   if (status === "authenticated") {
     router.push("/login/roll");
     return null;
   } else {
     return (
+      
       <AnimatePresence>
+        {loading && <LoadingSpinner />}
           <motion.div
             initial={{ opacity: 0 , y:25}}
             animate={{ opacity: 1 , y:0 }}
