@@ -1,20 +1,14 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import {
-  MdSpaceDashboard,
-  MdOutlineLogout,
-  MdClose,
-  MdOutlineMenu,
-} from "react-icons/md";
+import { MdSpaceDashboard, MdOutlineLogout, MdClose, MdOutlineMenu } from "react-icons/md";
 import { IoIosSettings, IoMdPerson } from "react-icons/io";
 import StudentDashboard from "./Dashboard/DashFirst";
 import StudentsLec from "./Students/StudentsLec";
 import SettingsLec from "./Settings/SettingsLec";
+import { LogOff } from "../root/MangeLogin";
+import LoadingSpinner from "./LoadingSpinner"; // Import the loading spinner
 
-// Define a type for the possible tab values
 type TabType = "dashboard" | "students" | "settings";
 
 const SideNav = () => {
@@ -22,6 +16,7 @@ const SideNav = () => {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("dashboard");
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     if (pathname.includes("/Lecturer/Dashboard")) {
@@ -33,81 +28,71 @@ const SideNav = () => {
     }
   }, [pathname]);
 
-  const handleSidebarToggle = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+  useEffect(() => {
+    setLoading(false); // Simulate loading finished
+  }, []);
+
+  const handleSidebarToggle = () => setSidebarOpen(!sidebarOpen);
 
   const handleNavigation = (path: string, tab: TabType) => {
+    setLoading(true); // Set loading to true when navigation starts
     router.push(path);
     setActiveTab(tab);
     setSidebarOpen(false);
+    setLoading(false); // Set loading to false when navigation finishes
   };
 
   return (
     <div className="flex h-screen w-screen bg-gray-900">
-      {/* Sidebar */}
+      {loading && <LoadingSpinner />} {/* Show spinner when loading */}
       <div
-        className={`fixed inset-0 bg-gradient-to-b from-gray-900 to-gray-800 p-6 z-50 shadow-xl transition-transform 
+        className={`fixed inset-0 bg-gradient-to-b from-gray-900 to-gray-800 p-6 z-50 shadow-xl transition-transform
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0 md:block md:w-64 md:z-auto`}
       >
-        {/* Sidebar header */}
         <div className="flex flex-col items-center justify-center mb-10">
           <button className="md:hidden ml-auto" onClick={handleSidebarToggle}>
             <MdClose className="text-gray-200 text-2xl" />
           </button>
           <Image src="/img/logo.png" alt="Logo" width={50} height={50} className="mr-4" />
           <h2 className="text-2xl font-bold text-white">
-            {" "}
-            SA <span className="text-sky-500">&</span> LMS{" "}
+            SA <span className="text-sky-500">&</span> LMS
           </h2>
         </div>
 
-        {/* Navigation items */}
         <nav className="flex flex-col space-y-4 flex-grow">
           <button
-            // onClick={() => handleNavigation("/Lecturer/Dashboard", "dashboard")}
-            onClick={() => router.push('/Lecturer/Dashboard')}
-            className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
-              ${activeTab === "dashboard"
-                ? "bg-gray-700 text-sky-400"
-                : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
-              }`}
+            onClick={() => handleNavigation("/Lecturer/Dashboard", "dashboard")}
+            className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition
+              ${activeTab === "dashboard" ? "bg-gray-700 text-sky-400" : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"}`}
           >
             <MdSpaceDashboard className="text-sky-500 text-2xl mr-4" />
             Dashboard
           </button>
 
           <button
-            // onClick={() => handleNavigation("/Lecturer/Students", "students")}
-            onClick={() => router.push('/Lecturer/Students')}
-            className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
-              ${activeTab === "students"
-                ? "bg-gray-700 text-sky-400"
-                : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
-              }`}
+            onClick={() => handleNavigation("/Lecturer/Students", "students")}
+            className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition
+              ${activeTab === "students" ? "bg-gray-700 text-sky-400" : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"}`}
           >
             <IoMdPerson className="text-sky-500 text-2xl mr-4" />
             Students
           </button>
+
           <button
-            // onClick={() => handleNavigation("/Lecturer/Settings", "settings")}
-            onClick={() => router.push('/Lecturer/Settings')}
-            className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
-              ${activeTab === "settings"
-                ? "bg-gray-700 text-sky-400"
-                : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
-              }`}
+            onClick={() => handleNavigation("/Lecturer/Settings", "settings")}
+            className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition
+              ${activeTab === "settings" ? "bg-gray-700 text-sky-400" : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"}`}
           >
             <IoIosSettings className="text-sky-500 text-2xl mr-4" />
             Settings
           </button>
         </nav>
 
-        {/* Logout button */}
         <div className="pt-6 border-t border-gray-700 w-5/6 absolute inset-x-0 bottom-5 ml-4">
           <button
             className="flex justify-center items-center bg-red-600 text-white p-3 rounded-full w-full
-            hover:bg-red-800 transition shadow-md hover:shadow-lg hover:scale-105 "
+            hover:bg-red-800 transition shadow-md hover:shadow-lg hover:scale-105"
+            onClick={LogOff}
           >
             <MdOutlineLogout className="text-2xl mr-2" />
             Logout
@@ -115,7 +100,6 @@ const SideNav = () => {
         </div>
       </div>
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex items-center justify-between p-4 bg-gray-900">
           <button className="md:hidden" onClick={handleSidebarToggle}>

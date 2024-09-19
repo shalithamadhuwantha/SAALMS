@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import {
@@ -23,6 +24,8 @@ const SideNav = () => {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("dashboard");
+  const { data: session, status } = useSession();
+
 
   useEffect(() => {
     if (pathname.includes("/Student/Dashboard")) {
@@ -103,9 +106,9 @@ const SideNav = () => {
           </button>
         </div>
       </div>
-
+              
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden ">
         <div className="flex items-center justify-between p-4 bg-gray-900">
           <button className="md:hidden" onClick={handleSidebarToggle}>
             <MdOutlineMenu className="text-gray-200 text-2xl" />
@@ -113,10 +116,10 @@ const SideNav = () => {
           <h2 className="text-2xl font-bold text-white">
             {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
           </h2>
-          <div className="flex items-center space-x-3">
-            <p className="text-gray-200">John</p>
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={()=>router.push("/Student/Settings")}>
+            <p className="text-gray-200">{session?.user?.name}</p>
             <div className="w-8 h-8 rounded-full overflow-hidden">
-              <Image src="/img/logo.png" width={40} height={40} alt="logo" className="w-8 h-8" />
+              <Image src={session?.user?.image || "/img/logo.png"} width={40} height={40} alt="logo" className="w-8 h-8" />
             </div>
           </div>
         </div>
