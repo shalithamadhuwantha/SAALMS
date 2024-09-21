@@ -1,6 +1,5 @@
 "use client";
 
-
 import Image from "next/image";
 import React, { useState, useEffect } from 'react';
 import { MdQrCode, MdPictureAsPdf, MdSchedule, MdDownload, MdPersonAdd } from 'react-icons/md';
@@ -54,7 +53,7 @@ const LecturerDashboard: React.FC = () => {
           <>
             <h2 className="text-xl font-semibold mb-4">QR Attendance</h2>
             <div className="flex justify-center items-center h-64">
-              <Image src="/img/logo.png" width={40} height={40} alt="logo" className="w-8 h-8" />
+              <Image src="/img/logo.png" width={40} height={40} alt="logo" className="w-40 h-40 md:w-64 md:h-64" />
             </div>
             <p className="text-center mt-4 text-sm text-gray-400">
               Scan this QR code to mark attendance
@@ -177,7 +176,11 @@ const LecturerDashboard: React.FC = () => {
           </>
         );
       case 'add-student':
-        return null;
+        return (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-gray-400">Add Student feature coming soon...</p>
+          </div>
+        );
       default:
         return null;
     }
@@ -186,56 +189,56 @@ const LecturerDashboard: React.FC = () => {
   return (
     <div className="bg-gray-900 min-h-screen text-white p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <header className="mb-8 flex flex-col items-center">
-          <h1 className="text-3xl sm:text-4xl font-bold text-indigo-300 mb-6 text-center">Lecturer Dashboard</h1>
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
-            {[
-              { icon: MdQrCode, label: 'QR Attendance', action: 'qr-attendance', color: 'bg-purple-600 hover:bg-purple-700' },
-              { icon: MdPictureAsPdf, label: 'Generate Report', action: 'generate-report', color: 'bg-red-600 hover:bg-red-700' },
-              { icon: MdSchedule, label: 'Class Schedule', action: 'class-schedule', color: 'bg-yellow-600 hover:bg-yellow-700' },
-              { icon: MdPersonAdd, label: 'Add Student', action: 'add-student', color: 'bg-green-600 hover:bg-green-700' },
-            ].map((button) => (
-              <button
-                key={button.action}
-                onClick={() => handleAction(button.action)}
-                className={`${button.color} text-white px-3 sm:px-5 py-2 sm:py-3 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-opacity-50 shadow-xl text-xs sm:text-sm flex items-center justify-center space-x-1 sm:space-x-2 ${currentAction === button.action ? 'ring-2 ring-white' : ''}`}
-              >
-                <button.icon className="text-lg sm:text-xl" />
-                <span className="hidden sm:inline">{button.label}</span>
-              </button>
-            ))}
-          </div>
+        <header className="mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-indigo-300 mb-4">Lecturer Dashboard</h1>
+          <nav>
+            <div className="flex flex-wrap justify-center gap-2">
+              {[
+                { icon: MdQrCode, label: 'QR Attendance', action: 'qr-attendance', color: 'bg-purple-600 hover:bg-purple-700' },
+                { icon: MdPictureAsPdf, label: 'Generate Report', action: 'generate-report', color: 'bg-red-600 hover:bg-red-700' },
+                { icon: MdSchedule, label: 'Class Schedule', action: 'class-schedule', color: 'bg-yellow-600 hover:bg-yellow-700' },
+                { icon: MdPersonAdd, label: 'Add Student', action: 'add-student', color: 'bg-green-600 hover:bg-green-700' },
+              ].map((button) => (
+                <button
+                  key={button.action}
+                  onClick={() => handleAction(button.action)}
+                  className={`${button.color} text-white px-2 sm:px-5 py-2 sm:py-3 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-opacity-50 shadow-xl text-xs sm:text-sm flex items-center justify-center ${currentAction === button.action ? 'ring-2 ring-white' : ''}`}
+                >
+                  <button.icon className="text-lg sm:text-xl" />
+                  <span className="hidden sm:inline ml-2">{button.label}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
         </header>
 
-        {currentAction !== 'add-student' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
-              {renderActionContent()}
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
+            {renderActionContent()}
+          </div>
 
-            <div className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
-              <h2 className="text-xl font-semibold mb-4">Your Classes</h2>
-              <div className="space-y-4">
-                {classes.map((cls) => (
-                  <div 
-                    key={cls.id} 
-                    className={`flex items-center justify-between bg-gray-700 p-3 sm:p-4 rounded-lg cursor-pointer transition-colors duration-300 ${selectedClass === cls.id ? 'ring-2 ring-indigo-500' : 'hover:bg-gray-600'}`}
-                    onClick={() => setSelectedClass(cls.id)}
-                  >
-                    <div>
-                      <h3 className="font-semibold text-sm sm:text-base">{cls.name}</h3>
-                      <p className="text-xs sm:text-sm text-gray-400">{cls.students} students</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-base sm:text-lg font-semibold text-indigo-400">{cls.attendance}%</p>
-                      <p className="text-xs sm:text-sm text-gray-400">Attendance</p>
-                    </div>
+          <div className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">Your Classes</h2>
+            <div className="space-y-4">
+              {classes.map((cls) => (
+                <div 
+                  key={cls.id} 
+                  className={`flex items-center justify-between bg-gray-700 p-3 sm:p-4 rounded-lg cursor-pointer transition-colors duration-300 ${selectedClass === cls.id ? 'ring-2 ring-indigo-500' : 'hover:bg-gray-600'}`}
+                  onClick={() => setSelectedClass(cls.id)}
+                >
+                  <div>
+                    <h3 className="font-semibold text-sm sm:text-base">{cls.name}</h3>
+                    <p className="text-xs sm:text-sm text-gray-400">{cls.students} students</p>
                   </div>
-                ))}
-              </div>
+                  <div className="text-right">
+                    <p className="text-base sm:text-lg font-semibold text-indigo-400">{cls.attendance}%</p>
+                    <p className="text-xs sm:text-sm text-gray-400">Attendance</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
