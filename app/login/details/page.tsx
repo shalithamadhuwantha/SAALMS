@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { signOut, useSession } from "next-auth/react";
@@ -10,13 +10,21 @@ import { LogOff } from "@/app/components/root/MangeLogin";
 import { Session } from "inspector";
 import toast, { Toaster } from "react-hot-toast";
 import AuthGoogle from "@/app/components/root/AuthGoogle";
+import LoadingSpinner from "@/app/components/root/LoadingSpinner";
+import { useRouter } from "next/navigation";
 
 export default function DetailWindow() {
   const [step, setStep] = useState(1);
   const { data: session, status } = useSession();
   const [university, setUniversity] = useState("");
   const [faculty, setFaculty] = useState("");
-  const apiurl = "http://localhost:3001/";
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    setLoading(false); // Simulate loading finished
+  }, []);
+
   // register student function for api request
 
   const resgiterSTDN = async () => {
@@ -24,8 +32,8 @@ export default function DetailWindow() {
     let name = session?.user?.name;
     let image = session?.user?.image;
     // const API_URL = process.env.BASIC_URL+"/api/student";
-
-    const API_URL = apiurl + "api/student";
+    setLoading(true);
+    const API_URL = "/api/student";
 
     try {
       const res = await fetch(API_URL, {
@@ -44,6 +52,10 @@ export default function DetailWindow() {
             color: "#fff",
           },
         });
+        setLoading(false);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
         return true;
       } else {
         toast("Registration failed", {
@@ -53,19 +65,22 @@ export default function DetailWindow() {
             color: "#ea494e",
           },
         });
+        setLoading(false);
         throw new Error("Registration failed");
       }
     } catch (error) {
+      setLoading(false);
       console.log("error", error);
     }
   };
+
   const resgiterLECT = async () => {
     let email = session?.user?.email;
     let name = session?.user?.name;
     let image = session?.user?.image;
     // const API_URL = process.env.BASIC_URL+"/api/student";
-
-    const API_URL = apiurl + "api/lecturer";
+    setLoading(true);
+    const API_URL = "/api/lecturer";
 
     try {
       const res = await fetch(API_URL, {
@@ -84,6 +99,9 @@ export default function DetailWindow() {
             color: "#fff",
           },
         });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
         return true;
       } else {
         toast("Registration failed", {
@@ -93,9 +111,11 @@ export default function DetailWindow() {
             color: "#0f172a",
           },
         });
+        setLoading(false);
         throw new Error("Registration failed");
       }
     } catch (error) {
+      setLoading(false);
       console.log("error", error);
     }
   };
@@ -128,10 +148,9 @@ export default function DetailWindow() {
     return <p>Loading...</p>;
   }
 
-
   return (
-    
     <AuthGoogle>
+      {loading && <LoadingSpinner />}
       <motion.div
         className="flex h-screen bg-gradient-to-br from-slate-900 to-slate-800"
         initial={{ opacity: 0 }}
@@ -164,7 +183,6 @@ export default function DetailWindow() {
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900 to-transparent"></div>
         </div>
-
         <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:rounded-l-[50px]">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
