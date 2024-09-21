@@ -1,8 +1,7 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import { MdAdd, MdFolder, MdSettings, MdEmail, MdSchool, MdBusinessCenter, MdQrCode, MdMenu, MdClose } from 'react-icons/md';
+import { MdAdd, MdFolder, MdSettings, MdEmail, MdSchool, MdBusinessCenter, MdQrCode } from 'react-icons/md';
 
 interface Course {
   id: string;
@@ -13,7 +12,6 @@ interface Course {
 }
 
 const StudentDashboard: React.FC = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [courses, setCourses] = useState<Course[]>([
     { id: "1", name: "Web Tech", code: "ICT 1209", batch: "21/22 Batch", bgColor: "bg-indigo-600" },
     { id: "2", name: "Skills Devel", code: "ICT 1108", batch: "21/22 Batch", bgColor: "bg-yellow-600" },
@@ -29,49 +27,38 @@ const StudentDashboard: React.FC = () => {
     avatarText: "GU"
   };
 
-  const route = useRouter();
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
   return (
     <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white p-4">
       <div className="max-w-7xl mx-auto">
         {/* Mobile Header */}
-        <div className="lg:hidden flex justify-between items-center mb-4">
-          <div className={`w-12 h-12 rounded-full ${student.avatarBgColor} flex items-center justify-center text-white text-xl font-bold shadow-lg`}>
-            {student.avatarText}
-          </div>
-          <button onClick={toggleMobileMenu} className="text-white">
-            {isMobileMenuOpen ? <MdClose size={24} /> : <MdMenu size={24} />}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden bg-gray-800 rounded-lg shadow-lg p-4 mb-4">
-            <h1 className="text-xl font-bold mb-2">{student.name}</h1>
-            <div className="text-sm text-gray-300 space-y-2">
-              <div className="flex items-center">
-                <MdEmail className="mr-1" size={16} />
-                <span>{student.email}</span>
-              </div>
-              <div className="flex items-center">
-                <MdSchool className="mr-1" size={16} />
-                <span>{student.faculty}</span>
-              </div>
-              <div className="flex items-center">
-                <MdBusinessCenter className="mr-1" size={16} />
-                <span>{student.department}</span>
-              </div>
+        <div className="lg:hidden mb-4">
+          <div className="flex items-center mb-4">
+            <div className={`w-16 h-16 rounded-full ${student.avatarBgColor} flex items-center justify-center text-white text-2xl font-bold mr-4 shadow-lg`}>
+              {student.avatarText}
             </div>
-            <button className="mt-4 flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-lg transition-colors duration-300 text-sm">
-              <MdSettings size={20} className="mr-1" />
-              Settings
-            </button>
+            <div>
+              <h1 className="text-xl font-bold mb-1">{student.name}</h1>
+              <button className="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-lg transition-colors duration-300 text-sm">
+                <MdSettings size={20} className="mr-1" />
+                Settings
+              </button>
+            </div>
           </div>
-        )}
+          <div className="text-sm text-gray-300 space-y-2 mb-4">
+            <div className="flex items-center">
+              <MdEmail className="mr-1" size={16} />
+              <span>{student.email}</span>
+            </div>
+            <div className="flex items-center">
+              <MdSchool className="mr-1" size={16} />
+              <span>{student.faculty}</span>
+            </div>
+            <div className="flex items-center">
+              <MdBusinessCenter className="mr-1" size={16} />
+              <span>{student.department}</span>
+            </div>
+          </div>
+        </div>
 
         {/* Desktop Header */}
         <div className="hidden lg:block bg-gray-800 rounded-lg shadow-lg p-4 mb-6 transition-all duration-300 hover:shadow-xl">
