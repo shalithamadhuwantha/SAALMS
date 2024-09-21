@@ -124,6 +124,11 @@ export default function DetailWindow() {
     exit: { opacity: 0, y: -20 },
   };
 
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+
   return (
     
     <AuthGoogle>

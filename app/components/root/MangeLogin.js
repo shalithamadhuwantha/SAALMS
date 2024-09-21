@@ -8,7 +8,10 @@ export async function LogOff() {
   try {
     sessionStorage.removeItem("roll");
     sessionStorage.removeItem("login");
-    await signOut();
+    await signOut({
+      callbackUrl: "/", // Redirects the user to '/goodbye' after sign-out
+    });
+
   } catch (error) {
     console.error("Error during sign out:", error);
   }

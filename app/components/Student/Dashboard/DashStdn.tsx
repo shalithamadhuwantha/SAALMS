@@ -10,6 +10,8 @@ import {
 } from "react-icons/md";
 import { TbCalendarClock } from "react-icons/tb";
 import { FaUserCircle, FaLink } from "react-icons/fa";
+import AuthGoogle from "../../root/AuthGoogle";
+
 
 
 const Dashboard = () => {
@@ -29,6 +31,8 @@ const Dashboard = () => {
    };
 
    return (
+
+      <AuthGoogle>
       <main className="col-span-4 p-6 bg-gray-900 text-white flex flex-col overflow-auto">
 
          <div className=" flex grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -144,6 +148,7 @@ const Dashboard = () => {
             <button className="w-full mt-4 text-sky-500 hover:underline">Show All</button>
          </div>
       </main>
+      </AuthGoogle>
    );
 };
 

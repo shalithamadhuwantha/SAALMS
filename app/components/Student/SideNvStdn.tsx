@@ -12,6 +12,8 @@ import {
 import { IoIosSettings } from "react-icons/io";
 import Dashboard from "./Dashboard/DashStdn";
 import Settings from "./Settings/SettingsStdn";
+import { LogOff } from "../root/MangeLogin";
+
 
 // Define a type for the possible tab values
 type TabType = "dashboard" | "settings";
@@ -93,6 +95,8 @@ const SideNav = () => {
           <button
             className="flex justify-center items-center bg-red-600 text-white p-3 rounded-full w-full
             hover:bg-red-800 transition shadow-md hover:shadow-lg hover:scale-105 "
+            onClick={LogOff}
+
           >
             <MdOutlineLogout className="text-2xl mr-2" />
             Logout
