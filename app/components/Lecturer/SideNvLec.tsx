@@ -10,13 +10,15 @@ import {
   MdOutlineMenu,
 } from "react-icons/md";
 import { IoIosSettings, IoMdPerson } from "react-icons/io";
-// import DashboardLec from "./Dashboard/DashLec";
 
 import StudentsLec from "./Students/StudentsLec";
 import SettingsLec from "./Settings/SettingsLec";
 import { LogOff } from "../root/MangeLogin";
 import LoadingSpinner from "../root/LoadingSpinner";
 import StudentDashboard from "./Dashboard/DashFirst";
+import LecturerDashboard from "./Dashboard/DashLec";
+import CoursePage from "@/app/Lecturer/Course/[id]/page";
+ // Import your Course component
 
 // Define a type for the possible tab values
 type TabType = "dashboard" | "students" | "settings";
@@ -67,8 +69,7 @@ const SideNav = () => {
           </button>
           <Image src="/img/logo.png" alt="Logo" width={50} height={50} className="mr-4" />
           <h2 className="text-2xl font-bold text-white">
-            {" "}
-            SA <span className="text-sky-500">&</span> LMS{" "}
+            SA <span className="text-sky-500">&</span> LMS
           </h2>
         </div>
 
@@ -142,9 +143,15 @@ const SideNav = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {activeTab === "dashboard" && <StudentDashboard />}
-          {activeTab === "students" && <StudentsLec />}
-          {activeTab === "settings" && <SettingsLec />}
+          {pathname.includes("/Lecturer/Course") ? (
+            <CoursePage /> // Display Course component for course pages
+          ) : activeTab === "dashboard" ? (
+            <StudentDashboard />
+          ) : activeTab === "students" ? (
+            <StudentsLec />
+          ) : activeTab === "settings" ? (
+            <SettingsLec />
+          ) : null}
         </div>
       </div>
     </div>

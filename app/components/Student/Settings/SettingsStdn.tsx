@@ -41,7 +41,7 @@ const Settings = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email: "bbsmgamagest@gmail.com" }),
+          body: JSON.stringify({ "email": session?.user?.email }),
         });
 
         if (!response.ok) {
