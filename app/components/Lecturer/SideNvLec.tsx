@@ -18,7 +18,9 @@ import LoadingSpinner from "../root/LoadingSpinner";
 import StudentDashboard from "./Dashboard/DashFirst";
 import LecturerDashboard from "./Dashboard/DashLec";
 import CoursePage from "@/app/Lecturer/Course/[id]/page";
- // Import your Course component
+import CreateClassPage from "./Dashboard/Createclass";
+
+// Import your Course component
 
 // Define a type for the possible tab values
 type TabType = "dashboard" | "students" | "settings";
@@ -60,14 +62,22 @@ const SideNav = () => {
       {/* Sidebar */}
       <div
         className={`fixed inset-0 bg-gradient-to-b from-gray-900 to-gray-800 p-6 z-50 shadow-xl transition-transform 
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0 md:block md:w-64 md:z-auto`}
+        ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:relative md:translate-x-0 md:block md:w-64 md:z-auto`}
       >
         {/* Sidebar header */}
         <div className="flex flex-col items-center justify-center mb-10">
           <button className="md:hidden ml-auto" onClick={handleSidebarToggle}>
             <MdClose className="text-gray-200 text-2xl" />
           </button>
-          <Image src="/img/logo.png" alt="Logo" width={50} height={50} className="mr-4" />
+          <Image
+            src="/img/logo.png"
+            alt="Logo"
+            width={50}
+            height={50}
+            className="mr-4"
+          />
           <h2 className="text-2xl font-bold text-white">
             SA <span className="text-sky-500">&</span> LMS
           </h2>
@@ -78,9 +88,10 @@ const SideNav = () => {
           <button
             onClick={() => handleNavigation("/Lecturer/Dashboard", "dashboard")}
             className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
-              ${activeTab === "dashboard"
-                ? "bg-gray-700 text-sky-400"
-                : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
+              ${
+                activeTab === "dashboard"
+                  ? "bg-gray-700 text-sky-400"
+                  : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
               }`}
           >
             <MdSpaceDashboard className="text-sky-500 text-2xl mr-4" />
@@ -90,9 +101,10 @@ const SideNav = () => {
           <button
             onClick={() => handleNavigation("/Lecturer/Students", "students")}
             className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
-              ${activeTab === "students"
-                ? "bg-gray-700 text-sky-400"
-                : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
+              ${
+                activeTab === "students"
+                  ? "bg-gray-700 text-sky-400"
+                  : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
               }`}
           >
             <IoMdPerson className="text-sky-500 text-2xl mr-4" />
@@ -102,9 +114,10 @@ const SideNav = () => {
           <button
             onClick={() => handleNavigation("/Lecturer/Settings", "settings")}
             className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
-              ${activeTab === "settings"
-                ? "bg-gray-700 text-sky-400"
-                : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
+              ${
+                activeTab === "settings"
+                  ? "bg-gray-700 text-sky-400"
+                  : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
               }`}
           >
             <IoIosSettings className="text-sky-500 text-2xl mr-4" />
@@ -137,7 +150,13 @@ const SideNav = () => {
           <div className="flex items-center space-x-3">
             <p className="text-gray-200">John</p>
             <div className="w-8 h-8 rounded-full overflow-hidden">
-              <Image src="/img/logo.png" width={40} height={40} alt="logo" className="w-8 h-8" />
+              <Image
+                src="/img/logo.png"
+                width={40}
+                height={40}
+                alt="logo"
+                className="w-8 h-8"
+              />
             </div>
           </div>
         </div>
@@ -145,6 +164,8 @@ const SideNav = () => {
         <div className="flex-1 overflow-y-auto">
           {pathname.includes("/Lecturer/Course") ? (
             <CoursePage /> // Display Course component for course pages
+          ) : pathname.includes("/Lecturer/Createcls") ? (
+            <CreateClassPage /> // Display Course component for course pages
           ) : activeTab === "dashboard" ? (
             <StudentDashboard />
           ) : activeTab === "students" ? (
