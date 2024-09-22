@@ -1,7 +1,9 @@
 'use client'; // Ensure the component runs on the client side
 
 
-import CreateClassPage from '@/app/components/Lecturer/Dashboard/Createclass';
+// import CreateClassPage from '@/app/components/Lecturer/Dashboard/Createclass';
+
+import LecturerDashboard from '@/app/components/Lecturer/Dashboard/DashLec';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -26,7 +28,7 @@ export default function CoursePage() {
 
   return (
     <div>
-      <CreateClassPage />
+      <LecturerDashboard />
     </div>
   );
 }
