@@ -1,243 +1,281 @@
-"use client";
-
 import Image from "next/image";
 import React, { useState, useEffect } from 'react';
-import { MdQrCode, MdPictureAsPdf, MdSchedule, MdDownload, MdPersonAdd } from 'react-icons/md';
+import { MdDownload, MdRefresh, MdPieChart, MdEdit, MdClose, MdSave, MdQrCode2 } from 'react-icons/md';
+import StudentList from './StudentList'; // Import the StudentList component
 
-interface Class {
+interface Student {
   id: number;
   name: string;
-  students: number;
-  attendance: number;
+  email: string;
+  registrationNumber: string;
 }
 
 const LecturerDashboard: React.FC = () => {
-  const [currentAction, setCurrentAction] = useState<string>('qr-attendance');
-  const [selectedClass, setSelectedClass] = useState<number | null>(null);
   const [qrValue, setQrValue] = useState<string>('');
+  const [attendance, setAttendance] = useState<number>(0);
+  const [absent, setAbsent] = useState<number>(0);
+  const [view, setView] = useState<'attendance' | 'report'>('attendance');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
-  const [lessonName, setLessonName] = useState<string>('');
-  const [lessonDate, setLessonDate] = useState<string>('');
-  const [lessonTime, setLessonTime] = useState<string>('');
-  const [lessonType, setLessonType] = useState<string>('physical');
-  const [lessonLocation, setLessonLocation] = useState<string>('');
-
-  const classes: Class[] = [
-    { id: 1, name: 'Introduction to Programming', students: 35, attendance: 90 },
-    { id: 2, name: 'Data Structures', students: 28, attendance: 85 },
-    { id: 3, name: 'Machine Learning', students: 22, attendance: 95 },
-  ];
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [students, setStudents] = useState<Student[]>([]); // New state for students
+  const [classDetails, setClassDetails] = useState({
+    classCode: 'CMT1204',
+    className: 'Introduction to Programming',
+    batch: '21/22',
+    department: 'BICT',
+    date: '2024-09-22',
+    time: '10:00 AM',
+    classType: 'physical',
+    totalStudents: 30
+  });
 
   useEffect(() => {
     setQrValue(`attendance-${Math.random().toString(36).substr(2, 9)}`);
-  }, []);
+    const interval = setInterval(() => {
+      setAttendance(prev => Math.min(prev + Math.floor(Math.random() * 3), classDetails.totalStudents));
+      setAbsent(prev => Math.max(classDetails.totalStudents - attendance, 0));
+    }, 5000);
 
-  const handleAction = (action: string) => {
-    setCurrentAction(action);
-  };
+    // Simulate fetching students data
+    const dummyStudents: Student[] = Array.from({ length: 10 }, (_, i) => ({
+      id: i + 1,
+      name: `Student ${i + 1}`,
+      email: `student${i + 1}@example.com`,
+      registrationNumber: `REG${1000 + i}`
+    }));
+    setStudents(dummyStudents);
 
-  const handleGenerateReport = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    return () => clearInterval(interval);
+  }, [classDetails.totalStudents]);
+
+  const handleGenerateReport = () => {
     console.log("Generating report for month:", selectedMonth);
   };
 
-  const handleScheduleClass = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log({ lessonName, lessonDate, lessonTime, lessonType, lessonLocation });
+  const handleDownloadReport = () => {
+    console.log("Downloading report for month:", selectedMonth);
   };
 
-  const renderActionContent = () => {
-    switch (currentAction) {
-      case 'qr-attendance':
-        return (
-          <>
-            <h2 className="text-xl font-semibold mb-4">QR Attendance</h2>
-            <div className="flex justify-center items-center h-64">
-              <Image src="/img/logo.png" width={40} height={40} alt="logo" className="w-40 h-40 md:w-64 md:h-64" />
-            </div>
-            <p className="text-center mt-4 text-sm text-gray-400">
-              Scan this QR code to mark attendance
-            </p>
-          </>
-        );
-      case 'generate-report':
-        return (
-          <>
-            <h2 className="text-xl font-semibold mb-4">Generate Attendance Report</h2>
-            <form onSubmit={handleGenerateReport} className="space-y-4">
-              <div>
-                <label htmlFor="month" className="block text-sm font-medium text-gray-400">Select Month</label>
-                <select
-                  id="month"
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(e.target.value)}
-                  className="mt-1 block w-full rounded-md bg-gray-700 border-transparent focus:border-indigo-500 focus:bg-gray-600 focus:ring-0 text-white"
-                  required
-                >
-                  <option value="">Select a month</option>
-                  <option value="01">January</option>
-                  <option value="02">February</option>
-                  <option value="03">March</option>
-                  <option value="04">April</option>
-                  <option value="05">May</option>
-                  <option value="06">June</option>
-                  <option value="07">July</option>
-                  <option value="08">August</option>
-                  <option value="09">September</option>
-                  <option value="10">October</option>
-                  <option value="11">November</option>
-                  <option value="12">December</option>
-                </select>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-300"
-              >
-                Generate Report
-              </button>
-            </form>
-            <button
-              onClick={() => console.log("Downloading report...")}
-              className="w-full mt-4 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-300 flex items-center justify-center"
-            >
-              <MdDownload className="mr-2" /> Download Report
-            </button>
-          </>
-        );
-      case 'class-schedule':
-        return (
-          <>
-            <h2 className="text-xl font-semibold mb-4">Schedule a Class</h2>
-            <form onSubmit={handleScheduleClass} className="space-y-4">
-              <div>
-                <label htmlFor="lessonName" className="block text-sm font-medium text-gray-400">Lesson Name</label>
-                <input
-                  type="text"
-                  id="lessonName"
-                  value={lessonName}
-                  onChange={(e) => setLessonName(e.target.value)}
-                  className="mt-1 block w-full rounded-md bg-gray-700 border-transparent focus:border-indigo-500 focus:bg-gray-600 focus:ring-0 text-white"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="lessonDate" className="block text-sm font-medium text-gray-400">Date</label>
-                <input
-                  type="date"
-                  id="lessonDate"
-                  value={lessonDate}
-                  onChange={(e) => setLessonDate(e.target.value)}
-                  className="mt-1 block w-full rounded-md bg-gray-700 border-transparent focus:border-indigo-500 focus:bg-gray-600 focus:ring-0 text-white"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="lessonTime" className="block text-sm font-medium text-gray-400">Time</label>
-                <input
-                  type="time"
-                  id="lessonTime"
-                  value={lessonTime}
-                  onChange={(e) => setLessonTime(e.target.value)}
-                  className="mt-1 block w-full rounded-md bg-gray-700 border-transparent focus:border-indigo-500 focus:bg-gray-600 focus:ring-0 text-white"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="lessonType" className="block text-sm font-medium text-gray-400">Type</label>
-                <select
-                  id="lessonType"
-                  value={lessonType}
-                  onChange={(e) => setLessonType(e.target.value)}
-                  className="mt-1 block w-full rounded-md bg-gray-700 border-transparent focus:border-indigo-500 focus:bg-gray-600 focus:ring-0 text-white"
-                  required
-                >
-                  <option value="physical">Physical</option>
-                  <option value="online">Online</option>
-                </select>
-              </div>
-              <div>
-                <label htmlFor="lessonLocation" className="block text-sm font-medium text-gray-400">Location</label>
-                <input
-                  type="text"
-                  id="lessonLocation"
-                  value={lessonLocation}
-                  onChange={(e) => setLessonLocation(e.target.value)}
-                  className="mt-1 block w-full rounded-md bg-gray-700 border-transparent focus:border-indigo-500 focus:bg-gray-600 focus:ring-0 text-white"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 transition-colors duration-300"
-              >
-                Schedule Class
-              </button>
-            </form>
-          </>
-        );
-      case 'add-student':
-        return (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-gray-400">Add Student feature coming soon...</p>
-          </div>
-        );
-      default:
-        return null;
-    }
+  const handleUpdateDetails = () => {
+    setIsEditing(true);
   };
+
+  const handleSaveDetails = () => {
+    setIsEditing(false);
+    console.log("Saving updated class details:", classDetails);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+  };
+
+  const handleEditStudent = (student: Student) => {
+    console.log("Editing student:", student);
+    // Implement edit functionality
+  };
+
+  const handleDeleteStudent = (id: number) => {
+    setStudents(students.filter(student => student.id !== id));
+  };
+
+  const renderAttendanceView = () => (
+    <>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-indigo-300">Real Time Attendance</h2>
+        <button 
+          onClick={() => setView('report')}
+          className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-full transition-colors duration-300 flex items-center shadow-lg"
+        >
+          <MdPieChart className="mr-2" /> Generate Report
+        </button>
+      </div>
+      <div className="grid grid-cols-2 gap-6 mb-6">
+        <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl text-center shadow-lg">
+          <h3 className="text-lg font-semibold mb-2">Attendance</h3>
+          <p className="text-4xl font-bold">{attendance}</p>
+        </div>
+        <div className="bg-gradient-to-br from-red-500 to-red-600 p-6 rounded-xl text-center shadow-lg">
+          <h3 className="text-lg font-semibold mb-2">Absent</h3>
+          <p className="text-4xl font-bold">{absent}</p>
+        </div>
+      </div>
+      <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl text-center shadow-lg mt-6">
+        <h3 className="text-lg font-semibold mb-2">Total</h3>
+        <p className="text-4xl font-bold">{attendance + absent}</p>
+      </div>
+    </>
+  );
+
+  const renderReportView = () => (
+    <>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-indigo-300">Generate Attendance Report</h2>
+        <button 
+          onClick={() => setView('attendance')}
+          className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-full transition-colors duration-300 flex items-center shadow-lg"
+        >
+          <MdRefresh className="mr-2" /> Real Time Attendance
+        </button>
+      </div>
+      <div className="space-y-6">
+        <div>
+          <label htmlFor="month" className="block text-lg font-medium text-gray-300 mb-2">
+            Select Month
+          </label>
+          <select
+            id="month"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="w-full bg-gray-700 text-white rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-lg"
+          >
+            <option value="">Select a month</option>
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </div>
+        <button
+          onClick={handleGenerateReport}
+          className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white py-3 rounded-lg transition-colors duration-300 text-lg font-semibold shadow-lg"
+        >
+          Generate Report
+        </button>
+        <button
+          onClick={handleDownloadReport}
+          className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-3 rounded-lg transition-colors duration-300 flex items-center justify-center text-lg font-semibold shadow-lg"
+        >
+          <MdDownload className="mr-2" /> Download Report
+        </button>
+      </div>
+    </>
+  );
+
+  const renderClassDetailsCard = () => (
+    <div className="bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 opacity-80 shadow-xl rounded-2xl p-6 mt-8 relative">
+      <h2 className="text-2xl font-bold mb-4 text-indigo-300">Class Details</h2>
+      {isEditing ? (
+        <>
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              value={classDetails.classCode}
+              onChange={(e) => setClassDetails({...classDetails, classCode: e.target.value})}
+              placeholder="Class Code"
+            />
+            <input
+              className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              value={classDetails.className}
+              onChange={(e) => setClassDetails({...classDetails, className: e.target.value})}
+              placeholder="Class Name"
+            />
+            <input
+              className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              value={classDetails.batch}
+              onChange={(e) => setClassDetails({...classDetails, batch: e.target.value})}
+              placeholder="Batch"
+            />
+            <input
+              className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              value={classDetails.department}
+              onChange={(e) => setClassDetails({...classDetails, department: e.target.value})}
+              placeholder="Department"
+            />
+            <input
+              className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              type="date"
+              value={classDetails.date}
+              onChange={(e) => setClassDetails({...classDetails, date: e.target.value})}
+            />
+            <input
+              className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              type="time"
+              value={classDetails.time}
+              onChange={(e) => setClassDetails({...classDetails, time: e.target.value})}
+            />
+            <select
+              className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              value={classDetails.classType}
+              onChange={(e) => setClassDetails({...classDetails, classType: e.target.value})}
+            >
+              <option value="physical">Physical</option>
+              <option value="online">Online</option>
+            </select>
+            <input
+              className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              type="number"
+              value={classDetails.totalStudents}
+              onChange={(e) => setClassDetails({...classDetails, totalStudents: parseInt(e.target.value)})}
+              placeholder="Total Students"
+            />
+          </div>
+          <div className="flex justify-end mt-4 space-x-2">
+            <button onClick={handleCancelEdit} className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded shadow-lg transition-colors duration-300">
+              <MdClose className="mr-1 inline" /> Cancel
+            </button>
+            <button onClick={handleSaveDetails} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-lg transition-colors duration-300">
+              <MdSave className="mr-1 inline" /> Save
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 gap-4 text-gray-300">
+            <p><strong className="text-white">Class Code:</strong> {classDetails.classCode}</p>
+            <p><strong className="text-white">Class Name:</strong> {classDetails.className}</p>
+            <p><strong className="text-white">Batch:</strong> {classDetails.batch}</p>
+            <p><strong className="text-white">Department:</strong> {classDetails.department}</p>
+            <p><strong className="text-white">Date:</strong> {classDetails.date}</p>
+            <p><strong className="text-white">Time:</strong> {classDetails.time}</p>
+            <p><strong className="text-white">Class Type:</strong> {classDetails.classType}</p>
+            <p><strong className="text-white">Total Students:</strong> {classDetails.totalStudents}</p>
+          </div>
+          <button 
+            onClick={handleUpdateDetails}
+            className="absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg transition-colors duration-300"
+          >
+            Update
+          </button>
+        </>
+      )}
+    </div>
+  );
 
   return (
-    <div className="bg-gray-900 min-h-screen text-white p-4 sm:p-6">
+    <div className="min-h-screen text-white p-6 sm:p-8">
       <div className="max-w-7xl mx-auto">
-        <header className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-indigo-300 mb-4">Lecturer Dashboard</h1>
-          <nav>
-            <div className="flex flex-wrap justify-center gap-2">
-              {[
-                { icon: MdQrCode, label: 'QR Attendance', action: 'qr-attendance', color: 'bg-purple-600 hover:bg-purple-700' },
-                { icon: MdPictureAsPdf, label: 'Generate Report', action: 'generate-report', color: 'bg-red-600 hover:bg-red-700' },
-                { icon: MdSchedule, label: 'Class Schedule', action: 'class-schedule', color: 'bg-yellow-600 hover:bg-yellow-700' },
-                { icon: MdPersonAdd, label: 'Add Student', action: 'add-student', color: 'bg-green-600 hover:bg-green-700' },
-              ].map((button) => (
-                <button
-                  key={button.action}
-                  onClick={() => handleAction(button.action)}
-                  className={`${button.color} text-white px-2 sm:px-5 py-2 sm:py-3 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-opacity-50 shadow-xl text-xs sm:text-sm flex items-center justify-center ${currentAction === button.action ? 'ring-2 ring-white' : ''}`}
-                >
-                  <button.icon className="text-lg sm:text-xl" />
-                  <span className="hidden sm:inline ml-2">{button.label}</span>
-                </button>
-              ))}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <div className="bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 opacity-80 shadow-xl rounded-2xl p-6">
+            <h2 className="text-2xl font-bold mb-6 text-indigo-300">QR Attendance</h2>
+            <div className="flex justify-center items-center h-64 bg-white rounded-xl p-4 shadow-inner">
+              <MdQrCode2 size={200} className="text-gray-800" />
             </div>
-          </nav>
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
-            {renderActionContent()}
+            <p className="text-center mt-6 text-lg text-gray-300">
+              Scan this QR code to mark attendance
+            </p>
           </div>
 
-          <div className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">Your Classes</h2>
-            <div className="space-y-4">
-              {classes.map((cls) => (
-                <div 
-                  key={cls.id} 
-                  className={`flex items-center justify-between bg-gray-700 p-3 sm:p-4 rounded-lg cursor-pointer transition-colors duration-300 ${selectedClass === cls.id ? 'ring-2 ring-indigo-500' : 'hover:bg-gray-600'}`}
-                  onClick={() => setSelectedClass(cls.id)}
-                >
-                  <div>
-                    <h3 className="font-semibold text-sm sm:text-base">{cls.name}</h3>
-                    <p className="text-xs sm:text-sm text-gray-400">{cls.students} students</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-base sm:text-lg font-semibold text-indigo-400">{cls.attendance}%</p>
-                    <p className="text-xs sm:text-sm text-gray-400">Attendance</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 opacity-80 shadow-xl rounded-2xl p-6">
+            {view === 'attendance' ? renderAttendanceView() : renderReportView()}
           </div>
+        </div>
+
+        {renderClassDetailsCard()}
+
+        <div className="bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 opacity-80 shadow-xl rounded-2xl p-6 mt-8">
+          <StudentList 
+            students={students}
+            onEditStudent={handleEditStudent}
+            onDeleteStudent={handleDeleteStudent}
+          />
         </div>
       </div>
     </div>
