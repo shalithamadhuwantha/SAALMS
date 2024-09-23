@@ -1,7 +1,18 @@
 import Image from "next/image";
-import React, { useState, useEffect } from 'react';
-import { MdDownload, MdRefresh, MdPieChart, MdEdit, MdClose, MdSave, MdQrCode2 } from 'react-icons/md';
-import StudentList from './StudentList'; // Import the StudentList component
+import React, { useState, useEffect } from "react";
+import { PiStudentBold } from "react-icons/pi";
+import {
+  MdDownload,
+  MdRefresh,
+  MdPieChart,
+  MdEdit,
+  MdClose,
+  MdSave,
+  MdQrCode2,
+} from "react-icons/md";
+import StudentList from "./StudentList"; // Import the StudentList component
+import AttendanceComponent from "./AttendaceFile";
+import { useRouter } from "next/navigation";
 
 interface Student {
   id: number;
@@ -11,42 +22,82 @@ interface Student {
 }
 
 const LecturerDashboard: React.FC = () => {
-  const [qrValue, setQrValue] = useState<string>('');
+  const [qrValue, setQrValue] = useState<string>("");
   const [attendance, setAttendance] = useState<number>(0);
   const [absent, setAbsent] = useState<number>(0);
-  const [view, setView] = useState<'attendance' | 'report'>('attendance');
-  const [selectedMonth, setSelectedMonth] = useState<string>('');
+  const [view, setView] = useState<"attendance" | "report">("attendance");
+  const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [students, setStudents] = useState<Student[]>([]); // New state for students
+  const [classId, setClassId] = useState<string | null>(null);
+  const [students, setStudents] = useState<Student[]>([]); 
+  const router = useRouter();// New state for students
   const [classDetails, setClassDetails] = useState({
-    classCode: 'CMT1204',
-    className: 'Introduction to Programming',
-    batch: '21/22',
-    department: 'BICT',
-    date: '2024-09-22',
-    time: '10:00 AM',
-    classType: 'physical',
-    totalStudents: 30
+    classCode: "CMT1204",
+    className: "Introduction to Programming",
+    batch: "21/22",
+    department: "BICT",
+    date: "2024-09-22",
+    time: "10:00 AM",
+    classType: "physical",
+    totalStudents: 30,
   });
 
   useEffect(() => {
     setQrValue(`attendance-${Math.random().toString(36).substr(2, 9)}`);
     const interval = setInterval(() => {
-      setAttendance(prev => Math.min(prev + Math.floor(Math.random() * 3), classDetails.totalStudents));
-      setAbsent(prev => Math.max(classDetails.totalStudents - attendance, 0));
+      setAttendance((prev) =>
+        Math.min(
+          prev + Math.floor(Math.random() * 3),
+          classDetails.totalStudents
+        )
+      );
+      setAbsent((prev) => Math.max(classDetails.totalStudents - attendance, 0));
     }, 5000);
+
+
+    
 
     // Simulate fetching students data
     const dummyStudents: Student[] = Array.from({ length: 10 }, (_, i) => ({
       id: i + 1,
       name: `Student ${i + 1}`,
       email: `student${i + 1}@example.com`,
-      registrationNumber: `REG${1000 + i}`
+      registrationNumber: `REG${1000 + i}`,
     }));
     setStudents(dummyStudents);
 
     return () => clearInterval(interval);
   }, [classDetails.totalStudents]);
+
+
+// QR attendace manupitaing button (Start Attandace Marks )
+
+const handleStartMark = async () => {
+  const courseCodeURL = window.location.pathname.split('/').pop();
+ 
+  
+  const courseCode = courseCodeURL || "" // Adjust as needed
+  const fetchedData = await AttendanceComponent.handleAttendance(courseCode);
+  
+  console.log(fetchedData); // Log the fetched data
+
+  // Ensure fetchedData is defined and check if it has classId or attendanceId
+  if (fetchedData && (fetchedData.classId || fetchedData.attendanceId)) {
+    // Construct the URL using the classId
+    const idToUse = fetchedData.classId || fetchedData.attendanceId;
+    router.push(`/Lecturer/QR/${idToUse}`);
+    
+    // Set the classId state if it exists, fallback to null if undefined
+    setClassId(fetchedData.classId ?? null);
+  } else {
+    console.error("No classId or attendanceId found."); // Handle case when no IDs are available
+  }
+
+  console.log(classId); // Log the current classId
+};
+
+
+
 
   const handleGenerateReport = () => {
     console.log("Generating report for month:", selectedMonth);
@@ -75,15 +126,17 @@ const LecturerDashboard: React.FC = () => {
   };
 
   const handleDeleteStudent = (id: number) => {
-    setStudents(students.filter(student => student.id !== id));
+    setStudents(students.filter((student) => student.id !== id));
   };
 
   const renderAttendanceView = () => (
     <>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-indigo-300">Real Time Attendance</h2>
-        <button 
-          onClick={() => setView('report')}
+        <h2 className="text-2xl font-bold text-indigo-300">
+          Real Time Attendance
+        </h2>
+        <button
+          onClick={() => setView("report")}
           className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-full transition-colors duration-300 flex items-center shadow-lg"
         >
           <MdPieChart className="mr-2" /> Generate Report
@@ -109,9 +162,11 @@ const LecturerDashboard: React.FC = () => {
   const renderReportView = () => (
     <>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-indigo-300">Generate Attendance Report</h2>
-        <button 
-          onClick={() => setView('attendance')}
+        <h2 className="text-2xl font-bold text-indigo-300">
+          Generate Attendance Report
+        </h2>
+        <button
+          onClick={() => setView("attendance")}
           className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-full transition-colors duration-300 flex items-center shadow-lg"
         >
           <MdRefresh className="mr-2" /> Real Time Attendance
@@ -119,7 +174,10 @@ const LecturerDashboard: React.FC = () => {
       </div>
       <div className="space-y-6">
         <div>
-          <label htmlFor="month" className="block text-lg font-medium text-gray-300 mb-2">
+          <label
+            htmlFor="month"
+            className="block text-lg font-medium text-gray-300 mb-2"
+          >
             Select Month
           </label>
           <select
@@ -168,43 +226,57 @@ const LecturerDashboard: React.FC = () => {
             <input
               className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               value={classDetails.classCode}
-              onChange={(e) => setClassDetails({...classDetails, classCode: e.target.value})}
+              onChange={(e) =>
+                setClassDetails({ ...classDetails, classCode: e.target.value })
+              }
               placeholder="Class Code"
             />
             <input
               className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               value={classDetails.className}
-              onChange={(e) => setClassDetails({...classDetails, className: e.target.value})}
+              onChange={(e) =>
+                setClassDetails({ ...classDetails, className: e.target.value })
+              }
               placeholder="Class Name"
             />
             <input
               className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               value={classDetails.batch}
-              onChange={(e) => setClassDetails({...classDetails, batch: e.target.value})}
+              onChange={(e) =>
+                setClassDetails({ ...classDetails, batch: e.target.value })
+              }
               placeholder="Batch"
             />
             <input
               className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               value={classDetails.department}
-              onChange={(e) => setClassDetails({...classDetails, department: e.target.value})}
+              onChange={(e) =>
+                setClassDetails({ ...classDetails, department: e.target.value })
+              }
               placeholder="Department"
             />
             <input
               className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               type="date"
               value={classDetails.date}
-              onChange={(e) => setClassDetails({...classDetails, date: e.target.value})}
+              onChange={(e) =>
+                setClassDetails({ ...classDetails, date: e.target.value })
+              }
             />
             <input
               className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               type="time"
               value={classDetails.time}
-              onChange={(e) => setClassDetails({...classDetails, time: e.target.value})}
+              onChange={(e) =>
+                setClassDetails({ ...classDetails, time: e.target.value })
+              }
             />
             <select
               className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               value={classDetails.classType}
-              onChange={(e) => setClassDetails({...classDetails, classType: e.target.value})}
+              onChange={(e) =>
+                setClassDetails({ ...classDetails, classType: e.target.value })
+              }
             >
               <option value="physical">Physical</option>
               <option value="online">Online</option>
@@ -213,15 +285,26 @@ const LecturerDashboard: React.FC = () => {
               className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               type="number"
               value={classDetails.totalStudents}
-              onChange={(e) => setClassDetails({...classDetails, totalStudents: parseInt(e.target.value)})}
+              onChange={(e) =>
+                setClassDetails({
+                  ...classDetails,
+                  totalStudents: parseInt(e.target.value),
+                })
+              }
               placeholder="Total Students"
             />
           </div>
           <div className="flex justify-end mt-4 space-x-2">
-            <button onClick={handleCancelEdit} className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded shadow-lg transition-colors duration-300">
+            <button
+              onClick={handleCancelEdit}
+              className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded shadow-lg transition-colors duration-300"
+            >
               <MdClose className="mr-1 inline" /> Cancel
             </button>
-            <button onClick={handleSaveDetails} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-lg transition-colors duration-300">
+            <button
+              onClick={handleSaveDetails}
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-lg transition-colors duration-300"
+            >
               <MdSave className="mr-1 inline" /> Save
             </button>
           </div>
@@ -229,16 +312,38 @@ const LecturerDashboard: React.FC = () => {
       ) : (
         <>
           <div className="grid grid-cols-2 gap-4 text-gray-300">
-            <p><strong className="text-white">Class Code:</strong> {classDetails.classCode}</p>
-            <p><strong className="text-white">Class Name:</strong> {classDetails.className}</p>
-            <p><strong className="text-white">Batch:</strong> {classDetails.batch}</p>
-            <p><strong className="text-white">Department:</strong> {classDetails.department}</p>
-            <p><strong className="text-white">Date:</strong> {classDetails.date}</p>
-            <p><strong className="text-white">Time:</strong> {classDetails.time}</p>
-            <p><strong className="text-white">Class Type:</strong> {classDetails.classType}</p>
-            <p><strong className="text-white">Total Students:</strong> {classDetails.totalStudents}</p>
+            <p>
+              <strong className="text-white">Class Code:</strong>{" "}
+              {classDetails.classCode}
+            </p>
+            <p>
+              <strong className="text-white">Class Name:</strong>{" "}
+              {classDetails.className}
+            </p>
+            <p>
+              <strong className="text-white">Batch:</strong>{" "}
+              {classDetails.batch}
+            </p>
+            <p>
+              <strong className="text-white">Department:</strong>{" "}
+              {classDetails.department}
+            </p>
+            <p>
+              <strong className="text-white">Date:</strong> {classDetails.date}
+            </p>
+            <p>
+              <strong className="text-white">Time:</strong> {classDetails.time}
+            </p>
+            <p>
+              <strong className="text-white">Class Type:</strong>{" "}
+              {classDetails.classType}
+            </p>
+            <p>
+              <strong className="text-white">Total Students:</strong>{" "}
+              {classDetails.totalStudents}
+            </p>
           </div>
-          <button 
+          <button
             onClick={handleUpdateDetails}
             className="absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg transition-colors duration-300"
           >
@@ -254,28 +359,28 @@ const LecturerDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <div className="bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 opacity-80 shadow-xl rounded-2xl p-6">
-            <h2 className="text-2xl font-bold mb-6 text-indigo-300">QR Attendance</h2>
-            <div className="flex justify-center items-center h-64 bg-white rounded-xl p-4 shadow-inner">
-              <MdQrCode2 size={200} className="text-gray-800" />
+            <h2 className="text-2xl font-bold mb-6 text-indigo-300">
+              QR Attendance
+            </h2>
+            <div className="flex justify-center items-center h-64  rounded-xl p-4 shadow-inner">
+              <Image src={"/img/qr.png"} width={250} height={250} alt="QR" />
             </div>
             <p className="text-center mt-6 text-lg text-gray-300">
-              Scan this QR code to mark attendance
+            <button onClick={()=>handleStartMark()} className="btn btn-outline btn-success"><PiStudentBold />Start Attandace Marks</button>
             </p>
           </div>
 
           <div className="bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 opacity-80 shadow-xl rounded-2xl p-6">
-            {view === 'attendance' ? renderAttendanceView() : renderReportView()}
+            {view === "attendance"
+              ? renderAttendanceView()
+              : renderReportView()}
           </div>
         </div>
 
         {renderClassDetailsCard()}
 
         <div className="bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 opacity-80 shadow-xl rounded-2xl p-6 mt-8">
-          <StudentList 
-            students={students}
-            onEditStudent={handleEditStudent}
-            onDeleteStudent={handleDeleteStudent}
-          />
+          <StudentList />
         </div>
       </div>
     </div>
