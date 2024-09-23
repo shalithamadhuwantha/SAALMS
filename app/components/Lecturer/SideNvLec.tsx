@@ -11,7 +11,8 @@ import {
 } from "react-icons/md";
 import { IoIosSettings, IoMdPerson } from "react-icons/io";
 
-import StudentsLec from "./Students/StudentsLec";
+// import StudentsLec from "./Students/StudentsLec";
+
 import SettingsLec from "./Settings/SettingsLec";
 import { LogOff } from "../root/MangeLogin";
 import LoadingSpinner from "../root/LoadingSpinner";
@@ -19,6 +20,9 @@ import StudentDashboard from "./Dashboard/DashFirst";
 import LecturerDashboard from "./Dashboard/DashLec";
 import CoursePage from "@/app/Lecturer/Course/[id]/page";
 import CreateClassPage from "./Dashboard/Createclass";
+import AddlecBase from "@/app/Lecturer/addstudent/[id]/page";
+
+
 
 // Import your Course component
 
@@ -166,10 +170,10 @@ const SideNav = () => {
             <CoursePage /> // Display Course component for course pages
           ) : pathname.includes("/Lecturer/Createcls") ? (
             <CreateClassPage /> // Display Course component for course pages
+          ) : pathname.includes("/Lecturer/addstudent") ? (
+            <AddlecBase /> // Display Course component for course pages
           ) : activeTab === "dashboard" ? (
             <StudentDashboard />
-          ) : activeTab === "students" ? (
-            <StudentsLec />
           ) : activeTab === "settings" ? (
             <SettingsLec />
           ) : null}

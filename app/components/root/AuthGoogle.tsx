@@ -18,7 +18,8 @@ const AuthGoogle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 ;
 
   if (status === "loading") {
-    return <p>Loading...</p>; // Show loading state while session is being loaded
+    return <LoadingSpinner />;
+    // return <p>Loading...</p>; // Show loading state while session is being loaded
   }
 
   if (status === "unauthenticated") {
@@ -30,7 +31,8 @@ const AuthGoogle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 
   if (isLoading) {
-    return <div>Loading...</div>; // Show loading state
+    return <LoadingSpinner />;
+    // return <div>Loading...</div>; // Show loading state
   }
 
   if (error) {

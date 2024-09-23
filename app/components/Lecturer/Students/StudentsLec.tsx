@@ -6,6 +6,7 @@ import { FaUserPlus, FaUsers } from "react-icons/fa";
 import { CgPushUp } from "react-icons/cg";
 import { IoIosDownload } from "react-icons/io";
 import { useRouter, usePathname } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 interface Student {
   id: number;
@@ -43,8 +44,16 @@ const Modal: React.FC<{
   );
 };
 
-const AddStudent: React.FC = () => {
+export interface GreetingProps {
+  name: string;
+  code: string; // Optional prop
+}
+
+const AddStudent: React.FC<GreetingProps> = ({ name, code }) => {
+  // console.log(name);
+
   const [students, setStudents] = useState<Student[]>([]);
+
   const [newStudent, setNewStudent] = useState<Student>({
     id: 0,
     name: "",
@@ -68,7 +77,14 @@ const AddStudent: React.FC = () => {
       setNewStudent({ id: 0, name: "", email: "", registrationNumber: "" });
       setIsAddModalOpen(false);
     } else {
-      console.log("All fields must be filled");
+      toast("All fields must be filled !", {
+        icon: "⚠️",
+        style: {
+          background: "#0f172a",
+          color: "#ebba34",
+        },
+      });
+      // console.log("All fields must be filled");
     }
   };
 
@@ -99,6 +115,13 @@ const AddStudent: React.FC = () => {
       setStudents(updatedStudents);
       setIsEditModalOpen(false);
     } else {
+      toast("All fields must be filled !", {
+        icon: "⚠️",
+        style: {
+          background: "#0f172a",
+          color: "#ebba34",
+        },
+      });
       console.log("All fields must be filled");
     }
   };
@@ -137,13 +160,69 @@ const AddStudent: React.FC = () => {
     !editingStudent.email ||
     !editingStudent.registrationNumber;
 
+  // console.log(name);
+
+  const updatestudent = async () => {
+    // console.log(students);
+
+    try {
+      const response = await fetch("/api/course/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          code: code,
+          students: students,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Success toast
+        toast("Student added successfully !", {
+          icon: "✅",
+          style: {
+            background: "#0f172a",
+            color: "#0f0",
+          },
+        });
+      } else {
+        // Error toast with message from the server
+        toast("Something is worng !", {
+          icon: "❌",
+          style: {
+            background: "#0f172a",
+            color: "#fff",
+          },
+        });
+      }
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="container p-4 lg:p-8 lg:pt-2">
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
       <header className="flex flex-col items-center">
         <h1 className="text-4xl font-bold text-indigo-300">
           {" "}
           Student Registration{" "}
         </h1>
+
+        <h3 className="text-xl font-bold text-indigo-600">
+          {name} ({code})
+        </h3>
         <div className="my-6 flex flex-wrap gap-4">
           <button
             onClick={() => setIsAddModalOpen(true)}
@@ -170,7 +249,7 @@ const AddStudent: React.FC = () => {
           <div className="flex flex-row">
             <h2 className="card-title"> Student List </h2>
             <button
-              onClick={() => console.log("Push button clicked")}
+              onClick={() => updatestudent()}
               className="bg-amber-500 hover:bg-amber-700 ml-auto text-white px-5 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none 
                      focus:ring-2 focus:ring-opacity-50 shadow-xl text-sm sm:text-base flex items-center justify-center space-x-2 font-semibold"
             >
@@ -325,7 +404,7 @@ const AddStudent: React.FC = () => {
           <IoIosDownload className="text-lg sm:text-xl" />
           Download Dummy File
         </button>
-        <input 
+        <input
           type="file"
           accept=".csv"
           onChange={handleBulkUpload}
