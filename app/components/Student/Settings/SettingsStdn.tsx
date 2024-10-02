@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import LoadingSpinner from "@/app/components/root/LoadingSpinner";
+
 import {
   MdOutlineDateRange,
   MdEdit,
@@ -20,6 +22,7 @@ import Image from "next/image";
 import { LogOff } from "../../root/MangeLogin";
 
 const Settings = () => {
+  const [loading, setLoading] = useState(true); 
   const { data: session, status } = useSession();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
@@ -35,6 +38,7 @@ const Settings = () => {
   useEffect(() => {
     // load user data from the database
     const fetchProfile = async () => {
+      setLoading(true)
       try {
         const response = await fetch("/api/student/Profilegrab", {
           method: "POST",
@@ -59,7 +63,9 @@ const Settings = () => {
           university: data.university || "N/A",
           joined: new Date(data.createdAt).toLocaleDateString() || "N/A",
         });
+        setLoading(false)
       } catch (error) {
+        setLoading(false)
         console.error("Error fetching profile:", error);
       }
     };
@@ -76,6 +82,7 @@ const Settings = () => {
   };
 
   const UpshUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true)
     e.preventDefault();
     setIsEditing(false);
 
@@ -132,9 +139,12 @@ const Settings = () => {
         university: result.university || "N/A",
         joined: new Date(result.createdAt).toLocaleDateString() || "N/A",
       });
+      setLoading(false)
     } catch (error) {
+      setLoading(false)
       console.error("Error updating profile:", error);
     }
+    setLoading(false)
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -146,6 +156,7 @@ const Settings = () => {
 
   return (
     <main className="col-span-4 p-4 sm:p-6 bg-gray-900 text-white flex flex-col overflow-auto">
+      {loading && <LoadingSpinner />}
       <div className="bg-gray-800 rounded-xl p-4 sm:p-8 shadow-2xl transition-all duration-300 ease-in-out relative overflow-hidden">
         {/* Decorative background elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-gray-800 to-purple-900 opacity-50"></div>
@@ -216,7 +227,7 @@ const Settings = () => {
                     name: "email",
                     label: "Email",
                     color: "text-green-400",
-                    editable: true,
+                    editable: false,
                   },
                   {
                     icon: MdBusinessCenter,

@@ -24,9 +24,13 @@ export async function POST(request) {
       );
     }
 
-    // Get today's date for comparison
+    // Get current date and time in Sri Jayewardenepura (UTC+5:30)
     const currentDate = new Date();
-    const startOfToday = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+    const sriLankaTimeOffset = 5.5 * 60 * 60 * 1000; // Offset in milliseconds (5 hours 30 minutes)
+    const sriLankaTime = new Date(currentDate.getTime() + sriLankaTimeOffset);
+
+    // Get today's date for comparison
+    const startOfToday = new Date(sriLankaTime.getFullYear(), sriLankaTime.getMonth(), sriLankaTime.getDate());
 
     // Check if attendance record already exists for today
     const existingRecord = await Attendance.findOne({
@@ -42,10 +46,11 @@ export async function POST(request) {
       );
     }
 
-    // Create new attendance record
+    // Create new attendance record with createdAt timestamp
     const attendanceRecord = new Attendance({
       lectureId,
       students,
+      createdAt: sriLankaTime, // Set createdAt to the calculated Sri Lanka time
     });
 
     await attendanceRecord.save();
