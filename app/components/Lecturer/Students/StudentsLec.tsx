@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
 import { FaUserPlus, FaUsers } from "react-icons/fa";
 import { CgPushUp } from "react-icons/cg";
@@ -44,14 +44,53 @@ const Modal: React.FC<{
   );
 };
 
+
+
+
 export interface GreetingProps {
   name: string;
   code: string; // Optional prop
 }
 
 const AddStudent: React.FC<GreetingProps> = ({ name, code }) => {
-  // console.log(name);
 
+  // utils/fetchStudents.ts
+const [datalist , setdatalist] = useState<String[]>([])
+
+  // console.log(name);
+  useEffect(() => {
+    // Set the demo students array to the state when the component mounts
+    const fetchStudents = async () => {
+      const id = window.location.pathname.split("/").pop()
+      const response = await fetch('/api/course/find', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              code: id
+          }),
+      });
+    
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+    
+      const data = await response.json();
+      setdatalist(data.course.students);
+      
+      setStudents(data.course.students);
+      return data.course.students; // Return the students array
+    };
+    fetchStudents()
+  
+    
+   
+  
+    // Update the students state with demo data
+   
+  }, []);
+  
   const [students, setStudents] = useState<Student[]>([]);
 
   const [newStudent, setNewStudent] = useState<Student>({
@@ -187,6 +226,11 @@ const AddStudent: React.FC<GreetingProps> = ({ name, code }) => {
             color: "#0f0",
           },
         });
+
+        setTimeout(() => {
+          router.push("/Lecturer/Course/"+window.location.pathname.split("/").pop() )
+      }, 2000);
+
       } else {
         // Error toast with message from the server
         toast("Something is worng !", {

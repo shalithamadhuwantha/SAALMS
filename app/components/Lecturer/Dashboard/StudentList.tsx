@@ -3,6 +3,9 @@ import { GiCheckMark } from "react-icons/gi";
 import { signOut, useSession } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
 import { CiMedicalClipboard } from "react-icons/ci";
+import { FaRegEdit } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+
 
 interface Student {
   id: number;
@@ -21,9 +24,9 @@ const StudentList = () => {
   const [idcode, setidcode] = useState<String>(""); // State for storing fetched students
   const [copied, setCopied] = useState(false);
   const { data: session, status } = useSession();
-  const [classId, setClassId] = useState<string>(''); // State for class ID
-  const [studentEmail, setStudentEmail] = useState<string>(''); // State for student email
-
+  const [classId, setClassId] = useState<string>(""); // State for class ID
+  const [studentEmail, setStudentEmail] = useState<string>(""); 
+  const router = useRouter();// State for student email
 
   // copy invite link to clip board
   const handleCopy = () => {
@@ -67,7 +70,7 @@ Use the link below to join the class 👇
         console.error("Failed to copy: ", err);
       });
   };
-  // fetstudent from the table 
+  // fetstudent from the table
 
   const fetchStudents = async () => {
     const courseCodeURL = window.location.pathname.split("/").pop();
@@ -93,19 +96,19 @@ Use the link below to join the class 👇
       console.error("Error fetching students:", error);
     }
   };
-  
-  // add student attendace manually 
+
+  // add student attendace manually
 
   const updateAttendance = async () => {
     try {
-      const response = await fetch('/api/attandace/add', {
-        method: 'PUT',
+      const response = await fetch("/api/attandace/add", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          "classId":idcode,
-          "studentEmail": studentEmail,
+          classId: idcode,
+          studentEmail: studentEmail,
         }),
       });
 
@@ -124,7 +127,7 @@ Use the link below to join the class 👇
         console.log(`Error: ${result.message}`);
       }
     } catch (error) {
-      console.error('Error updating attendance:', error);
+      console.error("Error updating attendance:", error);
       toast("Failed to update attendance.!", {
         icon: "⚠️",
         style: {
@@ -155,8 +158,7 @@ Use the link below to join the class 👇
         const data = await response.json();
         // console.log(data.attendance[0]._id);
         setidcode(data.attendance[0]._id);
-        
-        
+
         if (data.attendance) {
           const fetchedDates: string[] = data.attendance.map(
             (record: { createdAt: string }) =>
@@ -180,8 +182,6 @@ Use the link below to join the class 👇
     fetchAttendanceData();
 
     if (filterDate) {
- 
-
       fetchStudents();
     } else {
       setStudents([]); // Clear students if no date is selected
@@ -195,18 +195,24 @@ Use the link below to join the class 👇
     }, 5000); // Refresh every 5 seconds
 
     return () => clearInterval(interval); // Cleanup on component unmount
-  }, [filterDate]); 
+  }, [filterDate]);
   const handleEditStudent = (student: Student) => {
     setSelectedStudent(student);
     setShowEditModal(true);
   };
 
-  const handelupdateAtdnc = async (mail:string) =>{
-    setStudentEmail(mail)
+
+  const handelUpdatestdnBTN = () =>{
+   const id = window.location.pathname.split("/").pop();
+   router.push("/Lecturer/addstudent/"+id)
+  }
+
+  const handelupdateAtdnc = async (mail: string) => {
+    setStudentEmail(mail);
     toast.custom((t) => (
       <div
         className={`${
-          t.visible ? 'animate-enter' : 'animate-leave'
+          t.visible ? "animate-enter" : "animate-leave"
         } max-w-md w-full bg-blue-950 shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
       >
         <div className="flex-1 w-0 p-4">
@@ -224,7 +230,7 @@ Use the link below to join the class 👇
         <div className="flex border-l border-gray-200">
           <button
             onClick={() => {
-              updateAttendance() // Log the confirmation message
+              updateAttendance(); // Log the confirmation message
               toast.dismiss(t.id); // Dismiss the toast
             }}
             className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-green-600 hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -240,13 +246,15 @@ Use the link below to join the class 👇
         </div>
       </div>
     ));
-    
-    
+
     // updateAttendance()
-  }
+  };
 
   return (
     <div className="container mx-auto p-4 bg-navy-900">
+      <button onClick={handelUpdatestdnBTN} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  rounded-full	 float-end	">
+      Add/Edit
+      </button>
       <Toaster
         position="top-center"
         toastOptions={{
@@ -315,7 +323,10 @@ Use the link below to join the class 👇
                   {student.attendance}
                 </td>
                 <td className="px-4 py-2 text-blue-200">
-                  <button className="btn btn-outline btn-accent" onClick={()=>handelupdateAtdnc(student.email)}>
+                  <button
+                    className="btn btn-outline btn-accent"
+                    onClick={() => handelupdateAtdnc(student.email)}
+                  >
                     <GiCheckMark />
                   </button>
                 </td>
