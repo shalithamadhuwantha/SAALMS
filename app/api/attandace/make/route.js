@@ -24,14 +24,14 @@ export async function POST(request) {
       );
     }
 
-    // Get the current date (reset time for comparison)
+    // Get today's date for comparison
     const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
+    const startOfToday = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 
     // Check if attendance record already exists for today
     const existingRecord = await Attendance.findOne({
       lectureId,
-      createdAt: { $gte: currentDate },
+      createdAt: { $gte: startOfToday }, // Check from the start of today
     });
 
     // If an existing record is found, return the _id of the record

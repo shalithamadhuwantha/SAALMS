@@ -3,6 +3,7 @@ import AddStudent from '@/app/components/Lecturer/Students/StudentsLec';
 
 
 
+
 export default function DashboardPage() {
     return <StudentDashboard />;
 }

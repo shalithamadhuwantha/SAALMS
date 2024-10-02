@@ -39,7 +39,9 @@ const CreateClassPage: React.FC = () => {
 
   const getUserid = async () => {
     const email = session?.user?.email; // Replace with the actual email variable
-
+    console.log(email);
+    console.log("sssssss");
+    
     try {
       const profileResponse = await fetch("/api/lecturer/Profilegrab", {
         method: "POST",
@@ -48,7 +50,8 @@ const CreateClassPage: React.FC = () => {
         },
         body: JSON.stringify({ email }),
       });
-
+      console.log(profileResponse.ok);
+      
       if (profileResponse.ok) {
         const profileData = await profileResponse.json();
         sessionStorage.setItem("lecturerId", profileData._id); // Store lecturer ID in session storage
@@ -78,7 +81,10 @@ const CreateClassPage: React.FC = () => {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
+    
     const { name, value } = e.target;
+    console.log(name);
+    
     setClassData((prevData) => {
       const updatedData = {
         ...prevData,
@@ -94,9 +100,9 @@ const CreateClassPage: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    getUserid
+    await getUserid();
     // Define the payload that matches your API structure
-    // console.log(sessionStorage.getItem("lecturerId"));
+     console.log(sessionStorage.getItem("lecturerId"));
     
     const payload = {
       lecturerID: sessionStorage.getItem("lecturerId"),
@@ -113,6 +119,8 @@ const CreateClassPage: React.FC = () => {
     };
 
     try {
+      console.log(payload);
+      
       // Check if the class code already exists
       const checkResponse = await fetch("/api/lecturer/createclass", {
         method: "POST",
@@ -203,8 +211,7 @@ const CreateClassPage: React.FC = () => {
               classData.lessonName &&
                 classData.date &&
                 classData.time &&
-                (classData.type !== "online" ||
-                  (classData.type === "online" && classData.link))
+                classData.type 
             )
           );
           break;
@@ -250,7 +257,7 @@ const CreateClassPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gray-700 p-4 rounded-lg shadow-md hover:bg-gray-600 transition duration-300">
               <h3 className="text-lg font-semibold text-indigo-300">
-                Lesson Name
+                Short Description
               </h3>
               <p className="text-white">{classData.lessonName}</p>
             </div>
@@ -272,10 +279,10 @@ const CreateClassPage: React.FC = () => {
             <p className="text-white">{classData.type}</p>
           </div>
 
-          {classData.type === "online" && (
+         
             <div className="bg-gray-700 p-4 rounded-lg shadow-md hover:bg-gray-600 transition duration-300">
               <h3 className="text-lg font-semibold text-indigo-300">
-                Meeting Link
+                Meeting / Map Link
               </h3>
               <p className="text-blue-400">
                 <a
@@ -288,25 +295,7 @@ const CreateClassPage: React.FC = () => {
                 </a>
               </p>
             </div>
-          )}
-
-          {classData.additionalLink && (
-            <div className="bg-gray-700 p-4 rounded-lg shadow-md hover:bg-gray-600 transition duration-300">
-              <h3 className="text-lg font-semibold text-indigo-300">
-                Additional Link
-              </h3>
-              <p className="text-blue-400">
-                <a
-                  href={classData.additionalLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                >
-                  {classData.additionalLink}
-                </a>
-              </p>
-            </div>
-          )}
+         
         </div>
       </div>
     );
@@ -403,7 +392,7 @@ const CreateClassPage: React.FC = () => {
                     htmlFor="lessonName"
                     className="block text-sm font-medium text-indigo-300"
                   >
-                    Lesson Name
+                    Short Description
                   </label>
                   <input
                     id="lessonName"
@@ -411,7 +400,7 @@ const CreateClassPage: React.FC = () => {
                     name="lessonName"
                     value={classData.lessonName}
                     onChange={handleInputChange}
-                    placeholder="Enter lesson name"
+                    placeholder="Enter Short Description"
                     className="w-full p-3 bg-gray-700 rounded-lg text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:border-indigo-500 transition duration-300"
                     required
                   />
@@ -466,13 +455,13 @@ const CreateClassPage: React.FC = () => {
                       <option value="online">Online</option>
                     </select>
                   </div>
-                  {classData.type === "online" && (
+                  
                     <div className="space-y-2 md:col-span-2">
                       <label
                         htmlFor="link"
                         className="block text-sm font-medium text-indigo-300"
                       >
-                        Meeting Link
+                        Meeting / Map Link
                       </label>
                       <input
                         id="link"
@@ -485,24 +474,7 @@ const CreateClassPage: React.FC = () => {
                         required
                       />
                     </div>
-                  )}
-                  <div className="space-y-2 md:col-span-2">
-                    <label
-                      htmlFor="additionalLink"
-                      className="block text-sm font-medium text-indigo-300"
-                    >
-                      Additional Link (Optional)
-                    </label>
-                    <input
-                      id="additionalLink"
-                      type="url"
-                      name="additionalLink"
-                      value={classData.additionalLink}
-                      onChange={handleInputChange}
-                      placeholder="Enter additional link (if any)"
-                      className="w-full p-3 bg-gray-700 rounded-lg text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:border-indigo-500 transition duration-300"
-                    />
-                  </div>
+                  
                 </div>
               </div>
             )}

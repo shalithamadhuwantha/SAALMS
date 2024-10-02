@@ -19,8 +19,9 @@ import CoursePage from "@/app/Lecturer/Course/[id]/page";
 import CreateClassPage from "./Dashboard/Createclass";
 import AddlecBase from "@/app/Lecturer/addstudent/[id]/page";
 import QRCodeGenerator from "@/app/Lecturer/QR/[id]/page";
+import { IoMdPersonAdd } from "react-icons/io";
 
-type TabType = "dashboard" | "students" | "settings";
+type TabType = "dashboard" | "Add Class" | "settings";
 
 const SideNav = () => {
   const router = useRouter();
@@ -36,8 +37,8 @@ const SideNav = () => {
   useEffect(() => {
     if (pathname.includes("/Lecturer/Dashboard")) {
       setActiveTab("dashboard");
-    } else if (pathname.includes("/Lecturer/Students")) {
-      setActiveTab("students");
+    } else if (pathname.includes("/Lecturer/Createcls")) {
+      setActiveTab("Add Class");
     } else if (pathname.includes("/Lecturer/Settings")) {
       setActiveTab("settings");
     }
@@ -85,27 +86,43 @@ const SideNav = () => {
           {/* Navigation items */}
           <nav className="flex flex-col space-y-4 flex-grow">
             <button
-              onClick={() => handleNavigation("/Lecturer/Dashboard", "dashboard")}
+              onClick={() =>
+                handleNavigation("/Lecturer/Dashboard", "dashboard")
+              }
               className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
-                ${activeTab === "dashboard" ? "bg-gray-700 text-sky-400" : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"}`}
+                ${
+                  activeTab === "dashboard"
+                    ? "bg-gray-700 text-sky-400"
+                    : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
+                }`}
             >
               <MdSpaceDashboard className="text-sky-500 text-2xl mr-4" />
               Dashboard
             </button>
 
             <button
-              onClick={() => handleNavigation("/Lecturer/Students", "students")}
+              onClick={() =>
+                handleNavigation("/Lecturer/Createcls", "Add Class")
+              }
               className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
-                ${activeTab === "students" ? "bg-gray-700 text-sky-400" : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"}`}
+                ${
+                  activeTab === "Add Class"
+                    ? "bg-gray-700 text-sky-400"
+                    : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
+                }`}
             >
-              <IoMdPerson className="text-sky-500 text-2xl mr-4" />
-              Students
+              <IoMdPersonAdd className="text-sky-500 text-2xl mr-4" />
+              Add Class
             </button>
 
             <button
               onClick={() => handleNavigation("/Lecturer/Settings", "settings")}
               className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
-                ${activeTab === "settings" ? "bg-gray-700 text-sky-400" : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"}`}
+                ${
+                  activeTab === "settings"
+                    ? "bg-gray-700 text-sky-400"
+                    : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
+                }`}
             >
               <IoIosSettings className="text-sky-500 text-2xl mr-4" />
               Settings
