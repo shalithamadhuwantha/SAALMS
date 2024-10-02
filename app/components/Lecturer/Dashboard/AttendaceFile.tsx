@@ -1,6 +1,7 @@
 "use client";
 
-import React from 'react';
+import React , {useState}from 'react';
+import LoadingSpinner from "@/app/components/root/LoadingSpinner";
 
 interface Student {
   id: number;
@@ -25,9 +26,10 @@ interface AttendanceResponse {
   };
   error?: string;
 }
-
 const AttendanceComponent = {
+  
   fetchStudents: async (courseCode: string): Promise<Student[] | { message: string; error: string }> => {
+     
     
     try {
       const response = await fetch("/api/course/find", {

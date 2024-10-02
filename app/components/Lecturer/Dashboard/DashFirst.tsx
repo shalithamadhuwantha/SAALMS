@@ -13,6 +13,7 @@ import {
 } from "react-icons/md";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import LoadingSpinner from "@/app/components/root/LoadingSpinner";
 
 interface Course {
   id: string;
@@ -33,7 +34,7 @@ const StudentDashboard: React.FC = () => {
     avatarBgColor: "bg-gradient-to-r from-blue-500 to-purple-600",
     avatarText: "Gx",
   }); 
-
+  const [loading, setLoading] = useState(true); 
   const getRandomBgColor = (): string => {
     const colors = [
       "bg-red-500",
@@ -75,6 +76,7 @@ const StudentDashboard: React.FC = () => {
   
   // Function to fetch course data from the API
   const fetchCourses = async (lecturerID: string) => {
+    setLoading(true);
     try {
       const response = await fetch("/api/course/find/lecid", {
         method: "POST",
@@ -85,6 +87,7 @@ const StudentDashboard: React.FC = () => {
       });
   
       if (response.ok) {
+        setLoading(false)
         const data = await response.json();
         const fetchedCourses = data.courses;
   
@@ -99,9 +102,11 @@ const StudentDashboard: React.FC = () => {
   
         setCourses(formattedCourses);
       } else {
+        setLoading(false)
         console.error("Failed to fetch courses:", await response.text());
       }
     } catch (error) {
+      setLoading(false)
       console.error("Error fetching courses:", error);
     }
   };
@@ -110,7 +115,7 @@ const StudentDashboard: React.FC = () => {
   const getUserid = async () => {
     const email = session?.user?.email; // Make sure email is available
     if (!email) return; // Early return if email is not available
-  
+    setLoading(true)
     try {
       const profileResponse = await fetch("/api/lecturer/Profilegrab", {
         method: "POST",
@@ -121,6 +126,7 @@ const StudentDashboard: React.FC = () => {
       });
   
       if (profileResponse.ok) {
+        setLoading(false)
         const profileData = await profileResponse.json();
         setProfileid(profileData._id); // Set profile ID
   
@@ -137,12 +143,14 @@ const StudentDashboard: React.FC = () => {
         // Fetch courses once the lecturerID is set
         fetchCourses(profileData._id);
       } else {
+        setLoading(false)
         console.error(
           "Failed to retrieve lecturer profile:",
           await profileResponse.text()
         );
       }
     } catch (error) {
+      setLoading(false)
       console.error("Error retrieving lecturer profile:", error);
     }
   };
@@ -151,6 +159,7 @@ const StudentDashboard: React.FC = () => {
     if (status === "authenticated") {
       getUserid(); // Call once the session is authenticated
     }
+    setLoading(false)
   }, [status]); // Dependency on session status to ensure session is available before calling the API
   
 
@@ -158,6 +167,7 @@ const StudentDashboard: React.FC = () => {
 
   return (
     <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white p-4">
+      {loading && <LoadingSpinner />}
       <div className="max-w-7xl mx-auto">
         {/* Mobile Header */}
         <div className="lg:hidden mb-4">

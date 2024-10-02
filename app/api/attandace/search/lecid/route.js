@@ -17,7 +17,7 @@ export async function POST(request) {
     }
 
     // Find attendance records by lectureId
-    const attendanceRecords = await Attendance.find({ lectureId }).populate('students.id'); // Populate student data if referenced
+    const attendanceRecords = await Attendance.find({ lectureId }).populate('students.id').sort({ "createdAt":   -1 });; // Populate student data if referenced
 
     if (attendanceRecords.length > 0) {
       return NextResponse.json(
