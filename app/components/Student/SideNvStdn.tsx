@@ -9,15 +9,18 @@ import {
   MdClose,
   MdOutlineMenu,
 } from "react-icons/md";
+import { BsQrCode } from "react-icons/bs";
 import { IoIosSettings } from "react-icons/io";
-import Dashboard from "./Dashboard/DashStdn";
+import Dashboard from "./Dashboard/NewDash";
 import Settings from "./Settings/SettingsStdn";
 import { LogOff } from "../root/MangeLogin";
 import LoadingSpinner from "../root/LoadingSpinner";
-// import LoadingSpinner from "./LoadingSpinner";
+import ClassDteails from "./class/ClassDteails";
+// import ScanQr from "./ScanQrpage/ScanQR";
+import ScanQr from "./ScanQrpage/ScanQr";
 
 // Define a type for the possible tab values
-type TabType = "dashboard" | "settings";
+type TabType = "dashboard" | "settings" | "class" | "scan"; // Add "scan" to TabType
 
 const SideNav = () => {
   const router = useRouter();
@@ -35,6 +38,10 @@ const SideNav = () => {
       setActiveTab("dashboard");
     } else if (pathname.includes("/Student/Settings")) {
       setActiveTab("settings");
+    } else if (pathname.startsWith("/Student/Class/")) {
+      setActiveTab("class"); // Update active tab for Class Details
+    } else if (pathname.includes("/Student/Scan")) {
+      setActiveTab("scan"); // Update active tab for Scan page
     }
   }, [pathname]);
 
@@ -47,6 +54,14 @@ const SideNav = () => {
     setActiveTab(tab);
     setSidebarOpen(false);
   };
+
+  // Dynamic heading based on the active tab or pathname
+  const heading =
+    activeTab === "class"
+      ? "Class Details"
+      : activeTab === "scan"
+      ? "Scan QR"
+      : activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
 
   return (
     <div className="flex h-screen w-screen bg-gray-900">
@@ -63,8 +78,7 @@ const SideNav = () => {
           </button>
           <Image src="/img/logo.png" alt="Logo" width={50} height={50} className="mr-4" />
           <h2 className="text-2xl font-bold text-white">
-            {" "}
-            SA <span className="text-sky-500">&</span> LMS{" "}
+            SA <span className="text-sky-500">&</span> LMS
           </h2>
         </div>
 
@@ -83,6 +97,18 @@ const SideNav = () => {
           </button>
 
           <button
+            onClick={() => handleNavigation("/Student/Scan", "scan")}
+            className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
+              ${activeTab === "scan"
+                ? "bg-gray-700 text-sky-400"
+                : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
+              }`}
+          >
+            <BsQrCode  className="text-sky-500 text-2xl mr-4" />
+            Mark Attendace
+          </button>
+
+          <button
             onClick={() => handleNavigation("/Student/Settings", "settings")}
             className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
               ${activeTab === "settings"
@@ -93,6 +119,9 @@ const SideNav = () => {
             <IoIosSettings className="text-sky-500 text-2xl mr-4" />
             Settings
           </button>
+
+          {/* Add Scan button */}
+          
         </nav>
 
         {/* Logout button */}
@@ -115,7 +144,7 @@ const SideNav = () => {
             <MdOutlineMenu className="text-gray-200 text-2xl" />
           </button>
           <h2 className="text-2xl font-bold text-white">
-            {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+            {heading} {/* Dynamic heading */}
           </h2>
           <div className="flex items-center space-x-3">
             <p className="text-gray-200">John</p>
@@ -126,8 +155,15 @@ const SideNav = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {activeTab === "dashboard" && <Dashboard />}
-          {activeTab === "settings" && <Settings />}
+          {pathname.startsWith("/Student/Class/") ? (
+            <ClassDteails /> // Load Class Details component based on URL
+          ) : activeTab === "dashboard" ? (
+            <Dashboard />
+          ) : activeTab === "scan" ? (
+            <ScanQr /> // Load ScanPage component
+          ) : (
+            <Settings />
+          )}
         </div>
       </div>
     </div>

@@ -15,7 +15,7 @@ import {
 import { TbCalendarClock } from "react-icons/tb";
 import { FaUserCircle, FaLink } from "react-icons/fa";
 
-const Dashboard = () => {
+const ClassDetails = () => {
   const currentDate = new Date().toISOString().split('T')[0];
 
   const currentLecture = {
@@ -198,4 +198,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default ClassDetails;

@@ -1,141 +1,249 @@
-import React from 'react';
-import { FaUser, FaFolder, FaBell, FaEnvelope, FaPhone, FaMapMarkerAlt, FaVideo, FaClock, FaChalkboardTeacher } from 'react-icons/fa';
+"use client";
+
+import React, { useState, useEffect } from "react";
+import {
+  FaUser,
+  FaFolder,
+  FaBell,
+  FaEnvelope,
+  FaPhone,
+  FaMapMarkerAlt,
+  FaVideo,
+  FaClock,
+  FaChalkboardTeacher,
+  FaCalendarAlt,
+  FaBook
+} from "react-icons/fa";
+import { TbBrandZoom } from "react-icons/tb";
+import { RiDirectionLine } from "react-icons/ri";
+import Image from "next/image";
+import { useSession } from "next-auth/react";
+import LoadingSpinner from "../../root/LoadingSpinner";
+import { useRouter, usePathname } from "next/navigation";
+import StudentProfile from "./StudentProfile";
+import LectureFeeds from "./LectireFeed";
+
+// Define the Class interface
+interface ClassItem {
+  id: number;
+  code: string;
+  name: string;
+  lecturerName: string;
+  batch: string;
+  lessonName: string;
+  date: string;
+  time: string;
+  type: string;
+  lecturerImage: string;
+  color: string; // You can adjust this if you have a specific set of colors
+}
+
+// Define the API response interface
+interface ApiResponse {
+  message: string;
+  email: string;
+  classes: ClassItem[];
+}
 
 interface ClassCardProps {
-   title: string;
-   instructor: string;
-   year: string;
-   color: string;
+  code: string;
+  name: string;
+  batch: string;
+  lessonName: string;
+  date: string;
+  time: string;
+  type: 'physical' | 'online';
+  lecturerImage: string;
+  color: string;
+  instructor: string;
+  emailS: string;
 }
 
-const ClassCard: React.FC<ClassCardProps> = ({ title, instructor, year, color }) => (
-   <div className={`card shadow-xl mb-4 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl ${color}`}>
-      <div className="card-body">
-         <h2 className="card-title text-lg">{title}</h2>
-         <p className="text-sm opacity-70">{year}</p>
-         <p className="text-sm opacity-70">{instructor}</p>
-         <div className="card-actions justify-end mt-2">
-            <button className="btn btn-square btn-sm">
-               <FaUser className="h-4 w-4" />
-            </button>
-            <button className="btn btn-square btn-sm">
-               <FaFolder className="h-4 w-4" />
-            </button>
-         </div>
+const ClassCard: React.FC<ClassCardProps> = ({
+  code,
+  name,
+  batch,
+  lessonName,
+  date,
+  time,
+  type,
+  lecturerImage,
+  color,
+  instructor,
+  emailS
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return `${text.slice(0, maxLength)}...`;
+  };
+
+  return (
+    <div 
+    onClick={()=> router.push("/Student/Class/"+code) }
+      className={`rounded-lg overflow-hidden ${color} transition-all duration-300 ease-in-out hover:scale-105 cursor-pointer`}
+      style={{ 
+        minHeight: '300px',
+        boxShadow: '0 10px 30px -5px rgba(0, 0, 0, 0.3), 0 10px 20px -5px rgba(255, 255, 255, 0.15) inset',
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className={`p-6 relative flex flex-col h-full bg-black bg-opacity-30`}>
+        <div className="absolute top-2 right-2">
+          <span className={`text-sm font-bold text-white rounded-full px-3 py-1 bg-opacity-25 bg-black`}>{code}</span>
+        </div>
+       
+        <div className="flex items-center mb-4">
+          <div className="relative w-14 h-14 mr-3">
+            <Image 
+              src={lecturerImage}   
+              alt="Lecturer" 
+              layout="fill" 
+              objectFit="cover"
+              className="rounded-full"
+              style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
+            />
+          </div>
+          <div>
+            <p className="text-white font-semibold">{instructor}</p>
+            <p className="text-sm text-white opacity-75">{batch}</p>
+          </div>
+        </div>
+        <h2 className="text-xl font-bold text-white mb-3">{truncateText(name, 28)}</h2>
+        <p className="text-md text-white mb-4 font-medium">
+          <FaBook className="inline mr-2 mb-1" />
+          {truncateText(lessonName, 35)}
+        </p>
+        <div className="flex-grow"></div>
+        <div className="flex flex-wrap gap-4 text-white text-xs mt-auto">
+          <div className="flex items-center">
+            <FaCalendarAlt className="w-5 h-5 mr-2" />
+            <span>{date}</span>
+          </div>
+          <div className="flex items-center">
+            <FaClock className="w-5 h-5 mr-2" />
+            <span>{time}</span>
+          </div>
+          <div className="flex items-center">
+            {type === 'physical' ? <FaMapMarkerAlt className="w-5 h-5 mr-2" /> : <FaVideo className="w-5 h-5 mr-2" />}
+            <span className="capitalize">{type}</span>
+          </div>
+        </div>
       </div>
-   </div>
-);
-
-const UserProfile: React.FC = () => (
-   <div className="card bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-xl">
-      <div className="card-body">
-         <div className="flex items-center mb-4">
-            <div className="avatar placeholder mr-4">
-               <div className="bg-neutral-focus text-neutral-content rounded-full w-24">
-                  <span className="text-3xl">U</span>
-               </div>
-            </div>
-            <div>
-               <h2 className="card-title">John Doe</h2>
-               <p className="opacity-70">Student ID: 12345</p>
-            </div>
-         </div>
-         <div className="space-y-2">
-            <p className="flex items-center"><FaEnvelope className="mr-2" /> john.doe@example.com</p>
-            <p className="flex items-center"><FaPhone className="mr-2" /> +1 234 567 8900</p>
-            <p className="flex items-center"><FaUser className="mr-2" /> Computer Science, Year 2</p>
-         </div>
-      </div>
-   </div>
-);
-
-interface UpcomingLectureProps {
-   name: string;
-   code: string;
-   time: string;
-   lecturer: string;
-   isOnline: boolean;
-   link: string;
-}
-
-const UpcomingLecture: React.FC<UpcomingLectureProps> = ({ name, code, time, lecturer, isOnline, link }) => (
-   <div className="card bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-xl">
-      <div className="card-body">
-         <div className="flex justify-between items-start">
-            <div>
-               <h2 className="card-title text-2xl font-bold mb-2">Next Lecture</h2>
-               <p className="text-xl font-semibold">{name}</p>
-               <p className="text-lg opacity-90">{code}</p>
-            </div>
-            <div className="text-right">
-               <div className="bg-white text-blue-600 rounded-full p-3 inline-block">
-                  {isOnline ? <FaVideo size={24} /> : <FaMapMarkerAlt size={24} />}
-               </div>
-               <p className="mt-2 font-medium">{isOnline ? 'Online' : 'On Campus'}</p>
-            </div>
-         </div>
-         <div className="mt-4 space-y-2">
-            <p className="flex items-center"><FaClock className="mr-2" /> {time}</p>
-            <p className="flex items-center"><FaChalkboardTeacher className="mr-2" /> {lecturer}</p>
-         </div>
-         <div className="card-actions justify-end mt-4">
-            <a href={link} target="_blank" rel="noopener noreferrer"
-               className="btn btn-primary bg-white text-blue-600 hover:bg-blue-100 border-none">
-               {isOnline ? 'Join Online' : 'View Location'}
-            </a>
-         </div>
-      </div>
-   </div>
-);
-
-interface Class {
-   id: number;
-   title: string;
-   instructor: string;
-   year: string;
-   color: string;
-}
+    </div>
+  );
+};
 
 const Dashboard: React.FC = () => {
-   const classes: Class[] = [
-      { id: 1, title: 'ICT 1209 - Web Technologies', instructor: 'Dhanushka SJ', year: '2021/2022', color: 'bg-blue-500 text-white' },
-      { id: 2, title: 'ICT 1207 - Human Computer Interaction', instructor: 'Oshidhi Munasinghe', year: '2021/2022', color: 'bg-green-500 text-white' },
-      { id: 3, title: 'CMT 1307-Mathematical Methods II', instructor: 'Yamani Palihakkara', year: '2021/2022', color: 'bg-yellow-500 text-white' },
-      { id: 4, title: 'CMT 1301', instructor: 'Lalani Fernando', year: '2021/2022', color: 'bg-red-500 text-white' },
-      { id: 5, title: 'Program Designing and Programming', instructor: 'Malki Jayawardhana', year: '2021/2022', color: 'bg-purple-500 text-white' },
-      { id: 6, title: 'CMT 1303-Fundamentals of Physics', instructor: 'Yamani Palihakkara', year: '2021/2022', color: 'bg-pink-500 text-white' },
-   ];
+  const [loading, setLoading] = useState(true);
+  const [classes, setClasses] = useState<ClassItem[]>([]);
+  const { data: session, status } = useSession();
+  const [emailSTDN, setemailSTDN] = useState<string>();
 
-   const upcomingLecture: UpcomingLectureProps = {
-      name: 'Web Technologies',
-      code: 'ICT 1209',
-      time: 'Today, 2:00 PM',
-      lecturer: 'Dhanushka SJ',
-      isOnline: true,
-      link: 'https://zoom.us/j/example',
-   };
+  useEffect(() => {
+    setLoading(false);
+    setemailSTDN(session?.user?.email || "");
+    fetchAndMergeClasses();
+    console.log(session?.user?.email);
+  }, [session]);
 
-   return (
-      <div className="min-h-screen bg-base-200 p-4">
-         <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-               <UserProfile />
-               <UpcomingLecture {...upcomingLecture} />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-               {classes.map((cls) => (
-                  <ClassCard
-                     key={cls.id}
-                     title={cls.title}
-                     instructor={cls.instructor}
-                     year={cls.year}
-                     color={cls.color}
-                  />
-               ))}
-            </div>
-         </div>
+  const fetchAndMergeClasses = async () => {
+    try {
+      const response = await fetch('/api/student/class', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "email": session?.user?.email,
+        }),
+      });
+
+      const data: ApiResponse = await response.json();
+      console.log(data);  
+      setClasses([]);
+      if (data.classes && data.classes.length > 0) {
+        const newClasses = data.classes.map((apiClass, index) => ({
+          id: classes.length + index + 1, // Generate a unique id based on existing length
+          code: apiClass.code,
+          name: apiClass.name,
+          batch: apiClass.batch,
+          lessonName: apiClass.lessonName,
+          lecturerName: apiClass.lecturerName,
+          date: apiClass.date,
+          time: apiClass.time,
+          type: apiClass.type,
+          lecturerImage: apiClass.lecturerImage,
+          color: "bg-blue-500 text-white", // Default color or based on logic
+        }));
+        
+        setClasses(prevClasses => [...prevClasses, ...newClasses]);
+      } else {
+        console.log("No classes found for the student.");
+      }
+    } catch (error) {
+      console.error("Error fetching classes:", error);
+    }
+  };
+
+  const getRandomColor = () => {
+    const backgroundColors = [
+      'bg-red-500',
+      'bg-blue-500',
+      'bg-green-500',
+      'bg-yellow-500',
+      'bg-purple-500',
+      'bg-pink-500',
+      'bg-indigo-500',
+      'bg-teal-500',
+      'bg-gray-500',
+      'bg-orange-500',
+    ];
+
+    const textColors = [
+      'text-white',
+    ];
+
+    const randomBgColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)];
+    const randomTextColor = textColors[Math.floor(Math.random() * textColors.length)];
+
+    return `${randomBgColor} ${randomTextColor}`;
+  };
+
+  return (
+    <div className="min-h-screen bg-base-200 p-4">
+      {loading && <LoadingSpinner />}
+      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <StudentProfile />
+        <LectureFeeds />
+        </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {classes.map((cls) => (
+            <ClassCard
+              key={cls.id}
+              code={cls.code}
+              name={cls.name}
+              batch={cls.batch}
+              lessonName={cls.lessonName}
+              date={cls.date}
+              time={cls.time}
+              type={cls.type as 'physical' | 'online'}
+              lecturerImage={cls.lecturerImage}
+              color={getRandomColor()}
+              instructor={cls.lecturerName}
+              emailS={session?.user?.email || ""}
+            />
+          ))}
+        </div>
       </div>
-   );
+    </div>
+  );
 };
 
 export default Dashboard;
