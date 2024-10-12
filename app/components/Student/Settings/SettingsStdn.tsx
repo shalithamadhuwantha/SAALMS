@@ -20,9 +20,12 @@ import { FaUniversity } from "react-icons/fa";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { LogOff } from "../../root/MangeLogin";
+import Swal from "sweetalert2";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { FaUserEdit } from "react-icons/fa";
 
 const Settings = () => {
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const { data: session, status } = useSession();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
@@ -35,17 +38,95 @@ const Settings = () => {
     joined: "2024/10/21",
   });
 
+  // delete account notification and confirm
+  const deleteLecturerAccount = async (email: string) => {
+    try {
+      const response = await fetch("/api/student/del", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }), // Sending the lecturer's email
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        Swal.fire({
+          title: "Deleted!",
+          text: result.message,
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          allowEnterKey: false,
+        }).then(() => {
+          setTimeout(() => {
+            window.location.reload();
+          }, 10);
+        });
+      } else {
+        // Error handling (show error returned by the API)
+        Swal.fire({
+          title: "Error",
+          text: result.message || "Failed to delete the lecturer account",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      }
+    } catch (error) {
+      // Handle any network or unexpected errors
+      Swal.fire({
+        title: "Error",
+        text: "An unexpected error occurred. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
+
+
+  const handelDelProfile = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      html: `
+    <p>Deleting your account will <strong>permanently remove</strong>.</p>
+    <p>Please type <strong style="color: red;">'CONFIRM'</strong> to proceed.</p>
+  `,
+      icon: "warning",
+      input: "text",
+      inputPlaceholder: "Type CONFIRM",
+      showCancelButton: true,
+      confirmButtonText: "Delete Account",
+      cancelButtonText: "Cancel",
+      inputValidator: (value) => {
+        if (value !== "CONFIRM") {
+          return "You need to type 'CONFIRM'!";
+        }
+      },
+      customClass: {
+        popup:
+          "gradient bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 shadow-xl text-white", // Reference the CSS class here
+      },
+    }).then((result) => {
+      if (result.isConfirmed && result.value === "CONFIRM") {
+        deleteLecturerAccount(session?.user?.email || "");
+      }
+    });
+  };
+
   useEffect(() => {
     // load user data from the database
     const fetchProfile = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
         const response = await fetch("/api/student/Profilegrab", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ "email": session?.user?.email }),
+          body: JSON.stringify({ email: session?.user?.email }),
         });
 
         if (!response.ok) {
@@ -63,9 +144,9 @@ const Settings = () => {
           university: data.university || "N/A",
           joined: new Date(data.createdAt).toLocaleDateString() || "N/A",
         });
-        setLoading(false)
+        setLoading(false);
       } catch (error) {
-        setLoading(false)
+        setLoading(false);
         console.error("Error fetching profile:", error);
       }
     };
@@ -82,7 +163,7 @@ const Settings = () => {
   };
 
   const UpshUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
-    setLoading(true)
+    setLoading(true);
     e.preventDefault();
     setIsEditing(false);
 
@@ -139,12 +220,12 @@ const Settings = () => {
         university: result.university || "N/A",
         joined: new Date(result.createdAt).toLocaleDateString() || "N/A",
       });
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       console.error("Error updating profile:", error);
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -173,19 +254,32 @@ const Settings = () => {
             }}
           />
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-blue-300 relative mb-4 sm:mb-0">
-              Profile Settings
-              <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+            {/* Left-aligned heading */}
+            <h2 className="text-2xl sm:text-3xl font-bold text-indigo-300 relative mb-4 sm:mb-0">
+              Edit Profile
+              <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></span>
             </h2>
-            {!isEditing && (
+
+            {/* Right-aligned buttons */}
+            <div className="flex space-x-4">
+              {" "}
+              {/* Use 'space-x-4' to add space between buttons */}
+              {!isEditing && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="btn btn-outline btn-primary"
+                >
+                  <FaUserEdit className="text-lg sm:text-xl" />
+
+                </button>
+              )}
               <button
-                onClick={() => setIsEditing(true)}
-                className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-lg text-sm sm:text-base"
+                className="btn btn-outline btn-error"
+                onClick={handelDelProfile}
               >
-                <MdEdit className="text-lg sm:text-xl" />
-                <span>Edit Profile</span>
+                <RiDeleteBin5Line className="text-lg sm:text-xl" />
               </button>
-            )}
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 mb-6 sm:mb-8">
@@ -266,7 +360,7 @@ const Settings = () => {
                           className="w-full bg-gray-800 text-white p-2 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       ) : (
-                        <span className="block bg-gray-800 text-white p-2 rounded-lg">
+                        <span className="block bg-gray-800 text-slate-400 p-2 rounded-lg">
                           {profile[field.name as keyof typeof profile] || "N/A"}
                         </span>
                       )}

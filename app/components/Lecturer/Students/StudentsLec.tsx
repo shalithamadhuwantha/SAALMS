@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
 import { FaUserPlus, FaUsers } from "react-icons/fa";
 import { CgPushUp } from "react-icons/cg";
 import { IoIosDownload } from "react-icons/io";
 import { useRouter, usePathname } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
+import { signOut, useSession } from "next-auth/react";
 
 interface Student {
   id: number;
@@ -44,53 +45,49 @@ const Modal: React.FC<{
   );
 };
 
-
-
-
 export interface GreetingProps {
   name: string;
   code: string; // Optional prop
 }
 
 const AddStudent: React.FC<GreetingProps> = ({ name, code }) => {
-
   // utils/fetchStudents.ts
-const [datalist , setdatalist] = useState<String[]>([])
-
+  const [datalist, setdatalist] = useState<String[]>([]);
+  const [date , setdate] = useState<string>("");
+  const [time , settime] = useState<string>("");
+  const [lecnm , setlecnm] = useState<string>("");
   // console.log(name);
   useEffect(() => {
     // Set the demo students array to the state when the component mounts
     const fetchStudents = async () => {
-      const id = window.location.pathname.split("/").pop()
-      const response = await fetch('/api/course/find', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-              code: id
-          }),
+      const id = window.location.pathname.split("/").pop();
+      const response = await fetch("/api/course/find", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          code: id,
+        }),
       });
-    
+
       if (!response.ok) {
-          throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
-    
+
       const data = await response.json();
       setdatalist(data.course.students);
-      
+      setdate(data.course.date)
+      settime(data.course.time)
       setStudents(data.course.students);
+      setlecnm(data.lecturename)
       return data.course.students; // Return the students array
     };
-    fetchStudents()
-  
-    
-   
-  
+    fetchStudents();
+
     // Update the students state with demo data
-   
   }, []);
-  
+
   const [students, setStudents] = useState<Student[]>([]);
 
   const [newStudent, setNewStudent] = useState<Student>({
@@ -201,6 +198,68 @@ const [datalist , setdatalist] = useState<String[]>([])
 
   // console.log(name);
 
+  // Define types for email list, lecture details, and the overall email data structure
+  type EmailItem = {
+    id: number;
+    name: string;
+    email: string;
+    registrationNumber: string;
+   
+  };
+
+  type LectureDetails = {
+    lectureName: string;
+    lectureDate: string;
+    lectureTime: string;
+    lecturerName: string;
+    lectureurl: string;
+  };
+
+  type EmailData = {
+    emailList: EmailItem[];
+    lectureDetails: LectureDetails;
+    subject: string;
+  };
+
+  
+
+  // Define the function with type annotations
+  const sendBulkEmails = async (
+    emailList: EmailItem[],
+    lectureDetails: LectureDetails,
+    subject: string
+  ): Promise<void> => {
+    const emailData: EmailData = {
+      emailList,
+      lectureDetails,
+      subject,
+    };
+
+    try {
+      const response = await fetch("/api/notify/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to send email. Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        console.log("Emails sent successfully:", result.data);
+      } else {
+        console.error("Failed to send emails:", result.error);
+      }
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
+  };
+
   const updatestudent = async () => {
     // console.log(students);
 
@@ -219,6 +278,14 @@ const [datalist , setdatalist] = useState<String[]>([])
       const data = await response.json();
       if (response.ok) {
         // Success toast
+        const lectureDetails: LectureDetails = {
+          lectureName: name,
+          lectureDate: date,
+          lectureTime: time,
+          lecturerName: lecnm,
+          lectureurl: "https://saalms.shalithamadhuwantha.me/Student/Class/"+code,
+        };
+        sendBulkEmails(students , lectureDetails , "Welcome to the "+code)
         toast("Student added successfully !", {
           icon: "✅",
           style: {
@@ -228,9 +295,10 @@ const [datalist , setdatalist] = useState<String[]>([])
         });
 
         setTimeout(() => {
-          router.push("/Lecturer/Course/"+window.location.pathname.split("/").pop() )
-      }, 2000);
-
+          router.push(
+            "/Lecturer/Course/" + window.location.pathname.split("/").pop()
+          );
+        }, 2000);
       } else {
         // Error toast with message from the server
         toast("Something is worng !", {
@@ -297,7 +365,7 @@ const [datalist , setdatalist] = useState<String[]>([])
               className="bg-amber-500 hover:bg-amber-700 ml-auto text-white px-5 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none 
                      focus:ring-2 focus:ring-opacity-50 shadow-xl text-sm sm:text-base flex items-center justify-center space-x-2 font-semibold"
             >
-              Push
+              Add/Update
               <CgPushUp className="ml-3 text-xl sm:text-xl" />
             </button>
           </div>

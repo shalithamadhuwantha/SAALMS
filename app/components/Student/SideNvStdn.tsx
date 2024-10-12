@@ -16,11 +16,11 @@ import Settings from "./Settings/SettingsStdn";
 import { LogOff } from "../root/MangeLogin";
 import LoadingSpinner from "../root/LoadingSpinner";
 import ClassDteails from "./class/ClassDteails";
-// import ScanQr from "./ScanQrpage/ScanQR";
 import ScanQr from "./ScanQrpage/ScanQr";
+import { signOut, useSession } from "next-auth/react";
 
 // Define a type for the possible tab values
-type TabType = "dashboard" | "settings" | "class" | "scan"; // Add "scan" to TabType
+type TabType = "dashboard" | "settings" | "class" | "scan";
 
 const SideNav = () => {
   const router = useRouter();
@@ -28,6 +28,7 @@ const SideNav = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("dashboard");
   const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     setLoading(false); // Simulate loading finished
@@ -39,9 +40,9 @@ const SideNav = () => {
     } else if (pathname.includes("/Student/Settings")) {
       setActiveTab("settings");
     } else if (pathname.startsWith("/Student/Class/")) {
-      setActiveTab("class"); // Update active tab for Class Details
+      setActiveTab("class");
     } else if (pathname.includes("/Student/Scan")) {
-      setActiveTab("scan"); // Update active tab for Scan page
+      setActiveTab("scan");
     }
   }, [pathname]);
 
@@ -55,6 +56,9 @@ const SideNav = () => {
     setSidebarOpen(false);
   };
 
+  // Check if the current page is the Enroll page
+  const isEnrollPage = pathname.startsWith("/Student/Enroll");
+
   // Dynamic heading based on the active tab or pathname
   const heading =
     activeTab === "class"
@@ -62,6 +66,11 @@ const SideNav = () => {
       : activeTab === "scan"
       ? "Scan QR"
       : activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
+
+  // If Enroll page, return only the content without sidebar and header
+  if (isEnrollPage) {
+    return null; // No side navigation or header for the Enroll page
+  }
 
   return (
     <div className="flex h-screen w-screen bg-gray-900">
@@ -104,7 +113,7 @@ const SideNav = () => {
                 : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
               }`}
           >
-            <BsQrCode  className="text-sky-500 text-2xl mr-4" />
+            <BsQrCode className="text-sky-500 text-2xl mr-4" />
             Mark Attendace
           </button>
 
@@ -119,9 +128,6 @@ const SideNav = () => {
             <IoIosSettings className="text-sky-500 text-2xl mr-4" />
             Settings
           </button>
-
-          {/* Add Scan button */}
-          
         </nav>
 
         {/* Logout button */}
@@ -147,20 +153,27 @@ const SideNav = () => {
             {heading} {/* Dynamic heading */}
           </h2>
           <div className="flex items-center space-x-3">
-            <p className="text-gray-200">John</p>
+            <p className="text-gray-200">Student</p>
             <div className="w-8 h-8 rounded-full overflow-hidden">
-              <Image src="/img/logo.png" width={40} height={40} alt="logo" className="w-8 h-8" />
+              <Image
+                src={session?.user?.image || "/img/logo.png"}
+                width={40}
+                height={40}
+                alt="logo"
+                className="w-8 h-8"
+                onClick={() => router.push("/Student/Settings")}
+              />
             </div>
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
           {pathname.startsWith("/Student/Class/") ? (
-            <ClassDteails /> // Load Class Details component based on URL
+            <ClassDteails />
           ) : activeTab === "dashboard" ? (
             <Dashboard />
           ) : activeTab === "scan" ? (
-            <ScanQr /> // Load ScanPage component
+            <ScanQr />
           ) : (
             <Settings />
           )}

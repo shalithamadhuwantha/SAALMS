@@ -110,7 +110,7 @@ const Stateatdn: React.FC<stdnProps> = ({ atdnce, value }) => {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer">
+          <div onClick={()=>router.push("/Student/Scan")} className="bg-gray-800 bg-opacity-50 p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer">
             <MdQrCode2 className="text-4xl text-indigo-400 mb-2" />
             <p className="text-sm text-gray-300">Add Attendace</p>
           </div>

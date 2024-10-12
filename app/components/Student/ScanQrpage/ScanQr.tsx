@@ -6,10 +6,13 @@ import { FaQrcode, FaCamera } from "react-icons/fa";
 import { IoIosQrScanner } from "react-icons/io";
 import CryptoJS from "crypto-js"; // Import CryptoJS
 import { useSession } from "next-auth/react";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 const privateKey: string = "#5Du$855sSD*85sf$%"; // Replace with your actual private key
 
 const ScanQr = () => {
+  const router = useRouter();
   const [result, setResult] = useState<string | null>(null);
   const [decryptedData, setDecryptedData] = useState<string | null>(null); // State for decrypted data
   const [loading, setLoading] = useState<boolean>(true);
@@ -28,7 +31,7 @@ const ScanQr = () => {
     return sriLankaTime;
   };
 
-  const updateAttendance = async (id: string ) => {
+  const updateAttendance = async (id: string) => {
     try {
       const response = await fetch("/api/attandace/add", {
         method: "PUT",
@@ -44,18 +47,29 @@ const ScanQr = () => {
       const result = await response.json();
 
       if (response.ok) {
-        
-        alert('Attendance updated successfully!');
+        Swal.fire({
+          title: "Success!",
+          text: result.message,
+          icon: "success",
+          timer: 3000,
+          showConfirmButton: false,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          allowEnterKey: false,
+        }).then(() => {
+          setTimeout(() => {
+            router.push("/Student/Class/" + result.lectureId);
+          }, 3000);
+        });
       } else {
         console.log(`Error: ${result.message}`);
       }
     } catch (error) {
       console.error("Error updating attendance:", error);
-      
-      alert('Failed to update attendance.');
+
+      alert("Failed to update attendance.");
     }
   };
-
 
   useEffect(() => {
     const codeReader = new BrowserQRCodeReader();
@@ -139,24 +153,22 @@ const ScanQr = () => {
         .toISOString()
         .split("T")[0]; // Extract date from API response
       if (apiDate == attendanceId.split("#")[1]) {
-        const apitimeco = Number((getSriLankaTime()).replaceAll(":",""))
-        const qrtimeco = Number(attendanceId.split("#")[2].replaceAll(":",""))
+        const apitimeco = Number(getSriLankaTime().replaceAll(":", ""));
+        const qrtimeco = Number(attendanceId.split("#")[2].replaceAll(":", ""));
         console.log(attendanceId);
-        
+
         // const qrtimeco = Number(apitimeco)+12
         console.log(qrtimeco);
         console.log(apitimeco);
-        console.log(apitimeco+10 >= qrtimeco);
+        console.log(apitimeco + 10 >= qrtimeco);
         console.log(apitimeco <= qrtimeco);
         // 40 >= 31 && 31 >=30
-        if(qrtimeco+10 >= apitimeco &&  apitimeco >= qrtimeco ){
-
+        if (qrtimeco + 10 >= apitimeco && apitimeco >= qrtimeco) {
           console.log("Attendance recorded");
           updateAttendance(attendanceId.split("#")[0]);
-        }else{
+        } else {
           setError("Expired QR -- ");
         }
-
       } else {
         setError("Expired QR");
       }
@@ -209,12 +221,8 @@ const ScanQr = () => {
           <p className="font-bold flex items-center">
             <FaCamera className="mr-2" /> QR Code Detected
           </p>
-          <p>{result}</p>
-          {decryptedData && (
-            <p className="mt-2">
-              <strong>Decrypted Data:</strong> {decryptedData}
-            </p>
-          )}
+
+          {decryptedData && <p className="mt-2">Sacnning .....</p>}
         </div>
       )}
 

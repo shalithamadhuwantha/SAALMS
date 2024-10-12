@@ -15,7 +15,10 @@ import {
 import { FaUniversity } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
 import { signOut, useSession } from "next-auth/react";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { FaUserEdit } from "react-icons/fa";
 import Image from "next/image";
+import Swal from "sweetalert2";
 
 const LecturerSettings = () => {
   const { data: session, status } = useSession();
@@ -30,12 +33,91 @@ const LecturerSettings = () => {
     joined: "2024/10/21",
   });
 
+
+  // delete account notification and confirm
+  const deleteLecturerAccount = async (email: string) => {
+    try {
+      const response = await fetch("/api/lecturer/del", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }), // Sending the lecturer's email
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        Swal.fire({
+          title: "Deleted!",
+          text: result.message,
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          allowEnterKey: false,
+        }).then(() => {
+          setTimeout(() => {
+            window.location.reload();
+          }, 10);
+        });
+      } else {
+        // Error handling (show error returned by the API)
+        Swal.fire({
+          title: "Error",
+          text: result.message || "Failed to delete the lecturer account",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      }
+    } catch (error) {
+      // Handle any network or unexpected errors
+      Swal.fire({
+        title: "Error",
+        text: "An unexpected error occurred. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
+
+  const handelDelProfile = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      html: `
+      <p>Deleting your account will <strong>permanently remove all your classes and associated data</strong>.</p>
+      <p>Please type <strong style="color: red;">'CONFIRM'</strong> to proceed.</p>
+    `,
+      icon: "warning",
+      input: "text",
+      inputPlaceholder: "Type CONFIRM",
+      showCancelButton: true,
+      confirmButtonText: "Delete Account",
+      cancelButtonText: "Cancel",
+      inputValidator: (value) => {
+        if (value !== "CONFIRM") {
+          return "You need to type 'CONFIRM'!";
+        }
+      },
+      customClass: {
+        popup:
+          "gradient bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 shadow-xl text-white", // Reference the CSS class here
+      },
+    }).then((result) => {
+      if (result.isConfirmed && result.value === "CONFIRM") {
+        deleteLecturerAccount(session?.user?.email || "");
+      }
+    });
+  };
+
+
   useEffect(() => {
     const fetchProfile = async () => {
       if (!session?.user?.email) return; // Ensure email exists
-  
+
       console.log("Session email: " + session?.user?.email);
-  
+
       try {
         const response = await fetch("/api/lecturer/Profilegrab", {
           method: "POST",
@@ -44,13 +126,13 @@ const LecturerSettings = () => {
           },
           body: JSON.stringify({ email: session?.user?.email }),
         });
-  
+
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-  
+
         const data = await response.json();
-  
+
         setProfile({
           _id: data._id || "N/A",
           name: data.name || "N/A",
@@ -64,14 +146,12 @@ const LecturerSettings = () => {
         console.error("Error fetching profile:", error);
       }
     };
-  
+
     // Only fetch profile if session is authenticated
     if (status === "authenticated") {
       fetchProfile();
     }
   }, [session, status]); // Add 'status' as a dependency
-  
-
 
   const UpshUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -155,15 +235,15 @@ const LecturerSettings = () => {
 
   return (
     <main className="col-span-4 p-4 sm:p-6 bg-gray-900 text-white flex flex-col overflow-auto">
-       <Toaster
-            position="top-center"
-            toastOptions={{
-              style: {
-                background: "#333",
-                color: "#fff",
-              },
-            }}
-          />
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
       <div className="bg-gray-800 rounded-xl p-4 sm:p-8 shadow-2xl transition-all duration-300 ease-in-out relative overflow-hidden">
         {/* Decorative background elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 opacity-50"></div>
@@ -171,25 +251,37 @@ const LecturerSettings = () => {
 
         <div className="relative z-10">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8">
+            {/* Left-aligned heading */}
             <h2 className="text-2xl sm:text-3xl font-bold text-indigo-300 relative mb-4 sm:mb-0">
               Edit Profile
               <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></span>
             </h2>
-            {!isEditing && (
+
+            {/* Right-aligned buttons */}
+            <div className="flex space-x-4">
+              {" "}
+              {/* Use 'space-x-4' to add space between buttons */}
+              {!isEditing && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="btn btn-outline btn-primary"
+                >
+                  <FaUserEdit className="text-lg sm:text-xl" />
+                </button>
+              )}
               <button
-                onClick={() => setIsEditing(true)}
-                className="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 shadow-lg text-sm sm:text-base"
+                className="btn btn-outline btn-error"
+                onClick={handelDelProfile}
               >
-                <MdEdit className="text-lg sm:text-xl" />
-                <span>Edit Profile</span>
+                <RiDeleteBin5Line className="text-lg sm:text-xl" />
               </button>
-            )}
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 mb-6 sm:mb-8">
             <div className="flex-shrink-0 flex justify-center sm:justify-start">
               <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 p-1 shadow-lg">
-              <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+                <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
                   <Image
                     src={session?.user?.image || "/img/logo.png"}
                     alt="User profile"
