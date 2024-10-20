@@ -12,7 +12,7 @@
     "@ducanh2912/next-pwa": "^10.2.9",
     "@sweetalert2/theme-borderless": "^5.0.18",
     "@zxing/library": "^0.21.3",
-    "chart.js": "^4.4.3",
+    "chart.js": "^4.4.5",
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",

@@ -10,10 +10,13 @@ import {
   MdSave,
   MdQrCode2,
 } from "react-icons/md";
+import { MdDeleteOutline } from "react-icons/md";
+import { signOut, useSession } from "next-auth/react";
 import StudentList from "./StudentList"; // Import the StudentList component
 import AttendanceComponent from "./AttendaceFile";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
+import Swal from "sweetalert2";
 
 import LoadingSpinner from "../../root/LoadingSpinner";
 
@@ -58,6 +61,7 @@ const LecturerDashboard: React.FC = () => {
   const [attendacecounter, setattendacecounter] = useState<Number>(0);
   const [loading, setLoading] = useState(true);
   const router = useRouter(); // New state for students
+  const { data: session, status } = useSession();
   const [classDetails, setClassDetails] = useState({
     classCode: "CMT1204",
     className: "Introduction to Programming",
@@ -71,7 +75,6 @@ const LecturerDashboard: React.FC = () => {
   });
 
   const getAttendance = async () => {
-    
     const code = window.location.pathname.split("/").pop() || "";
     try {
       const data = await fetchLectureAttendance(code); // Await the fetch
@@ -456,6 +459,63 @@ const LecturerDashboard: React.FC = () => {
     setLoading(false);
   };
 
+  // delete post request
+
+  const deleteClass = async (classCode: string): Promise<void> => {
+    if (!classCode) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Class Code',
+        text: 'Please provide a class code!',
+      });
+      return;
+    }
+  
+    try {
+      const response = await fetch('/api/course/del', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: classCode }),
+      });
+  
+      const data: { message: string; error?: string } = await response.json();
+  
+      if (response.ok) {
+        // Show success alert
+        Swal.fire({
+          icon: 'success',
+          title: 'Class Deleted',
+          text: data.message,
+          timer: 2000,
+          showConfirmButton: false,
+          willClose: () => {
+            // Redirect to the dashboard after the alert
+            window.location.href = '/Lecturer/Dashboard';
+          },
+        });
+      } else {
+        // Show error alert
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: data.message || 'Failed to delete class.',
+        });
+      }
+    } catch (error) {
+      // Show error alert in case of exception
+      Swal.fire({
+        icon: 'error',
+        title: 'An Error Occurred',
+        text: 'Please try again.',
+      });
+    }
+  };
+  // delete function
+
+
+
   const handleUpdateDetails = () => {
     setIsEditing(true);
   };
@@ -470,6 +530,35 @@ const LecturerDashboard: React.FC = () => {
     setIsEditing(false);
   };
 
+  const handleDeleteDetails = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      html: `
+      <p>Deleting this course will <strong>permanently remove the course and all associated data</strong>.</p>
+<p>Please type <strong style="color: red;">'CONFIRM'</strong> to proceed with the deletion.</p>
+
+    `,
+      icon: "warning",
+      input: "text",
+      inputPlaceholder: "Type CONFIRM",
+      showCancelButton: true,
+      confirmButtonText: "Delete Account",
+      cancelButtonText: "Cancel",
+      inputValidator: (value) => {
+        if (value !== "CONFIRM") {
+          return "You need to type 'CONFIRM'!";
+        }
+      },
+      customClass: {
+        popup:
+          "gradient bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 shadow-xl text-white", // Reference the CSS class here
+      },
+    }).then((result) => {
+      if (result.isConfirmed && result.value === "CONFIRM") {
+        deleteClass(window.location.pathname.split("/").pop() || "");
+      }
+    });
+  };
 
   const renderAttendanceView = () => (
     <>
@@ -587,6 +676,7 @@ const LecturerDashboard: React.FC = () => {
       {isEditing ? (
         <>
           <div className="grid grid-cols-2 gap-4">
+            {/* Form inputs */}
             <input
               className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               value={classDetails.classCode}
@@ -657,7 +747,6 @@ const LecturerDashboard: React.FC = () => {
               }
               placeholder="Total Students"
             />
-
             <input
               className="bg-gray-700 text-white rounded p-2 border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               value={classDetails.link}
@@ -669,6 +758,14 @@ const LecturerDashboard: React.FC = () => {
             />
           </div>
           <div className="flex justify-end mt-4 space-x-2">
+            {/* Delete button */}
+            <button
+              onClick={handleDeleteDetails}
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow-lg transition-colors duration-300"
+            >
+              <MdDeleteOutline className="mr-1 inline" /> Delete
+            </button>
+            {/* Cancel and Save buttons */}
             <button
               onClick={handleCancelEdit}
               className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded shadow-lg transition-colors duration-300"
@@ -769,7 +866,6 @@ const LecturerDashboard: React.FC = () => {
               : renderReportView()}
           </div>
         </div>
-
         {renderClassDetailsCard()}
 
         <div className="bg-gradient-to-br from-indigo-900 via-gray-800 to-purple-900 opacity-80 shadow-xl rounded-2xl p-6 mt-8">

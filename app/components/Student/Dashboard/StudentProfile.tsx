@@ -27,6 +27,7 @@ const StudentProfile: React.FC = () => {
   const { data: session, status } = useSession();
   const [degree, setDegree] = useState<string>("");
   const [stid, setStid] = useState<string>("");
+  const [stnm, setStnm] = useState<string>("");
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -49,7 +50,8 @@ const StudentProfile: React.FC = () => {
           // console.log(data);
 
           setDegree(data.university + "," + data.faculty);
-          setStid(data._id); // Assuming 'stid' is part of the response
+          setStid(data._id); 
+          setStnm(data.name); 
           setLoading(false);
         } catch (error) {
           setLoading(false);
@@ -61,7 +63,7 @@ const StudentProfile: React.FC = () => {
     if (session?.user?.email) {
       fetchProfile();
     }
-  }, [session, degree, stid]);
+  }, [session, degree, stid , stnm]);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -87,7 +89,7 @@ const StudentProfile: React.FC = () => {
             </div>
           </div>
           <div>
-            <h2 className="card-title">{session?.user?.name}</h2>
+            <h2 className="card-title">{stnm}</h2>
             <p className="opacity-70">Student ID: {stid}</p>
           </div>
         </div>

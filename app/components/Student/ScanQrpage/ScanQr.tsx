@@ -71,6 +71,8 @@ const ScanQr = () => {
     }
   };
 
+  
+// app\components\Student\ScanQrpage\ScanQr.tsx
   useEffect(() => {
     const codeReader = new BrowserQRCodeReader();
 
@@ -78,7 +80,7 @@ const ScanQr = () => {
 
     const startScanner = async () => {
       if (status !== "authenticated") {
-        setError("User not authenticated"); // Error if session is not ready
+        setError("User not authenticated");
         return;
       }
 

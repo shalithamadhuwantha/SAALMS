@@ -18,15 +18,15 @@ interface Student {
 const StudentList = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [filterDate, setFilterDate] = useState<string>(""); // State for filter date
+  const [filterDate, setFilterDate] = useState<string>("");
   const [classHeldDates, setClassHeldDates] = useState<string[]>([]);
-  const [students, setStudents] = useState<Student[]>([]); // State for storing fetched students
-  const [idcode, setidcode] = useState<String>(""); // State for storing fetched students
+  const [students, setStudents] = useState<Student[]>([]); 
+  const [idcode, setidcode] = useState<String>(""); 
   const [copied, setCopied] = useState(false);
   const { data: session, status } = useSession();
-  const [classId, setClassId] = useState<string>(""); // State for class ID
+  const [classId, setClassId] = useState<string>(""); 
   const [studentEmail, setStudentEmail] = useState<string>(""); 
-  const router = useRouter();// State for student email
+  const router = useRouter();
 
   // copy invite link to clip board
   const handleCopy = () => {

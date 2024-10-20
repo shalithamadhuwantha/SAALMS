@@ -44,7 +44,17 @@ export async function POST(request) {
       );
     }
 
-    // Step 3: Return the latest class and class details
+    // Step 3: Check if the student is in the class schema
+    const isStudentInClass = classData.students.some(student => student.email === email);
+
+    if (!isStudentInClass) {
+      return NextResponse.json(
+        { message: "Student has dropped from the class." },
+        { status: 403 } // Forbidden
+      );
+    }
+
+    // Step 4: Return the latest class and class details
     const result = {
       message: "Latest class and details found",
       lectureId, // Include the lectureId

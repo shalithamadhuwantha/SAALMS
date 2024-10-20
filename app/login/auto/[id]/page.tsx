@@ -1,23 +1,22 @@
-// app/login/auto/[id]/page.tsx
 "use client";
 import React, { useEffect } from "react";
-import { useRouter } from "next/navigation"; // Using next/navigation for router
-import { useParams } from "next/navigation"; // To capture dynamic route params
+import { useRouter } from "next/navigation"; 
+import { useParams } from "next/navigation"; 
 
 const AutoLogin: React.FC = () => {
   const router = useRouter();
-  const { id } = useParams(); // 'id' will capture the dynamic part of the URL ('Student' or 'Lecturer')
+  const { id } = useParams(); 
 
   useEffect(() => {
     if (id === "Student" || id === "Lecturer") {
-      sessionStorage.setItem("roll", id); // Set the roll based on the URL
+      sessionStorage.setItem("roll", id); 
       if (id === "Student") {
-        router.push("/Student/Dashboard"); // Redirect Student
+        router.push("/Student/Dashboard"); 
       } else if (id === "Lecturer") {
-        router.push("/Lecturer/Dashboard"); // Redirect Lecturer
+        router.push("/Lecturer/Dashboard"); 
       }
     } else {
-      // If the id is not 'Student' or 'Lecturer', redirect back to the login page or an error page
+    
       router.push("/");
     }
   }, [id, router]);
