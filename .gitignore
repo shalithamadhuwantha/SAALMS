@@ -4,3 +4,8 @@ node_modules
 .idx
 .env
 
+public\sw.js
+public\sw.js.map
+public\workbox-631a4576.js
+public\workbox-631a4576.js.map
+
