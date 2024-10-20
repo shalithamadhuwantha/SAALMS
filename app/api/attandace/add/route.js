@@ -61,8 +61,13 @@ export async function PUT(request) {
     // Save the updated attendance record
     await attendanceRecord.save();
 
+    // Return success message with the lectureId
     return NextResponse.json(
-      { message: "Student attendance updated successfully", attendance: studentToUpdate },
+      {
+        message: "Student attendance updated successfully",
+        attendance: studentToUpdate,
+        lectureId: attendanceRecord.lectureId, // Output lectureId here
+      },
       { status: 200 }
     );
   } catch (error) {

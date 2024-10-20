@@ -20,6 +20,7 @@ import CreateClassPage from "./Dashboard/Createclass";
 import AddlecBase from "@/app/Lecturer/addstudent/[id]/page";
 import QRCodeGenerator from "@/app/Lecturer/QR/[id]/page";
 import { IoMdPersonAdd } from "react-icons/io";
+import { signOut, useSession } from "next-auth/react";
 
 type TabType = "dashboard" | "Add Class" | "settings";
 
@@ -29,6 +30,7 @@ const SideNav = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("dashboard");
   const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     setLoading(false);
@@ -154,14 +156,15 @@ const SideNav = () => {
               {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
             </h2>
             <div className="flex items-center space-x-3">
-              <p className="text-gray-200">John</p>
+              <p className="text-gray-200">Lecture</p>
               <div className="w-8 h-8 rounded-full overflow-hidden">
                 <Image
-                  src="/img/logo.png"
+                  src= {session?.user?.image || "/img/logo.png"}
                   width={40}
                   height={40}
                   alt="logo"
                   className="w-8 h-8"
+                  onClick={()=>router.push("/Lecturer/Settings")}
                 />
               </div>
             </div>

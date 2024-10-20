@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Your New Lecture</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0f172a;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #0f172a;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(to bottom right, #312e81, #373737, #5b21b6);
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .content h2 {
+            color: #312e81;
+            font-size: 22px;
+        }
+
+        .content p {
+            color: #ffffff;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .card {
+            background: linear-gradient(to bottom right, #312e81, #373737, #5b21b6);
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .button {
+            background-color: #5b21b6;
+            color: #ffffff;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 5px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #4c1d95;
+        }
+
+        .footer {
+            background-color: #f4f4f4;
+            color: #686868;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .content h2 {
+                font-size: 20px;
+            }
+
+            .card h3 {
+                font-size: 18px;
+            }
+
+            .button {
+                font-size: 14px;
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #0f172a;
+                color: #d1d5db;
+            }
+
+            .container {
+                background-color: #1e293b;
+            }
+
+            .header {
+                background: linear-gradient(to bottom right, #4f46e5, #373737, #9333ea);
+            }
+
+            .content h2 {
+                color: #cc83f7;
+            }
+
+            .content p {
+                color: #d1d5db;
+            }
+
+            .card {
+                background: linear-gradient(to bottom right, #4f46e5, #373737, #9333ea);
+            }
+
+            .button {
+                background-color: #9333ea;
+                color: #ffffff;
+            }
+
+            .button:hover {
+                background-color: #7e22ce;
+            }
+
+            .footer {
+                background-color: #0f172a;
+                color: #9ca3af;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Your New Lecture!</h1>
+        </div>
+
+        <div class="content">
+            <h2>Dear [Student Name],</h2>
+            <p>
+                Congratulations! You have been assigned to a new lecture in the Student Attendance & Lecture Management System (SA&LMS). Below are the details of your new lecture.
+            </p>
+
+            <div class="card">
+                <h3>Lecture: [Lecture Name]</h3>
+                <p>Date: [Lecture Date]</p>
+                <p>Time: [Lecture Time]</p>
+                <p>Lecturer: [Lecturer Name]</p>
+            </div>
+
+            <p>
+                Please mark your calendar and ensure you attend the lecture on time. We are excited to have you on board and wish you a fruitful learning experience.
+            </p>
+
+            <div class="button-container">
+                <a href="[SA&LMS_URL]" class="button">View Lecture Details</a>
+            </div>
+
+            <!-- Account Creation Section -->
+            <div class="button-container">
+                <p>If you don't have an account, please create one now to stay updated with your lecture schedule.</p>
+                <a href="https://saalms.shalithamadhuwantha.me/login/auto/Student" class="button">Create Your Account</a>
+            </div>
+
+            <p>
+                If you have any questions, feel free to reach out to us at saalms@shalithamadhuwantha.me.
+            </p>
+        </div>
+
+        <div class="footer">
+            &copy; 2024 SA&LMS | Group Eleven(11)
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,6 +1,6 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import Attendance from "@/models/attendance";
-import Class from "@/models/class"; // Import the Class model
+import Class from "@/models/class"; // Import Class model
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -17,72 +17,39 @@ export async function POST(request) {
       );
     }
 
-    // Get the current date and time
-    const currentTime = new Date();
-
     // Step 1: Find the most recent attendance record for the student using email
     const latestAttendance = await Attendance.findOne(
-      {
-        'students.email': email,
-        createdAt: { $lte: currentTime } // Only get classes created before or at the current time
-      },
+      { "students.email": email }, // Find attendance based on student email
       { lectureId: 1, createdAt: 1 } // Only select lectureId and createdAt
     )
-    .sort({ createdAt: -1 }) // Sort by newest class
-    .limit(1); // Get only the most recent class
+      .sort({ createdAt: -1 }) // Sort by newest first based on createdAt field
+      .limit(1); // Get only the most recent record
 
     if (!latestAttendance) {
       return NextResponse.json(
-        { message: "No class found for this student at this time." },
+        { message: "No class found for this student." },
         { status: 404 }
       );
     }
 
-    const { lectureId, createdAt } = latestAttendance;
+    const { lectureId, createdAt } = latestAttendance; // Extract lectureId and createdAt
 
-    // Step 2: Using the lectureId, find the corresponding class details
-    const classDetails = await Class.findOne({ code: lectureId });
+    // Step 2: Find the class using the lectureId
+    const classData = await Class.findOne({ code: lectureId }); // Adjust the query to match your schema
 
-    if (!classDetails) {
+    if (!classData) {
       return NextResponse.json(
-        { message: `Class with lectureId ${lectureId} not found.` },
+        { message: "No class data found for the lecture ID." },
         { status: 404 }
       );
     }
 
-<<<<<<< Updated upstream
-    // Step 3: Combine the data and return the final response
-=======
-    // Step 3: Check if the student is in the class schema
-    const isStudentInClass = classData.students.some(student => student.email === email);
-
-    if (!isStudentInClass) {
-      return NextResponse.json(
-        { message: "Student has dropped from the class." },
-        { status: 403 } // Forbidden
-      );
-    }
-
-    // Step 4: Return the latest class and class details
->>>>>>> Stashed changes
+    // Step 3: Return the latest class and class details
     const result = {
-      message: "Class found",
-      attendance: {
-        lectureId,
-        createdAt
-      },
-      classDetails: {
-        name: classDetails.name,
-        lecturerID: classDetails.lecturerID,
-        batch: classDetails.batch,
-        lessonName: classDetails.lessonName,
-        date: classDetails.date,
-        time: classDetails.time,
-        type: classDetails.type,
-        link: classDetails.link,
-        additionalLink: classDetails.additionalLink,
-        students: classDetails.students // Add student details if needed
-      }
+      message: "Latest class and details found",
+      lectureId, // Include the lectureId
+      createdAt, // Include the raw createdAt date
+      classData, // Include the class data
     };
 
     return NextResponse.json(result, { status: 200 });

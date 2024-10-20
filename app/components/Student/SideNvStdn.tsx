@@ -9,15 +9,18 @@ import {
   MdClose,
   MdOutlineMenu,
 } from "react-icons/md";
+import { BsQrCode } from "react-icons/bs";
 import { IoIosSettings } from "react-icons/io";
-import Dashboard from "./Dashboard/DashStdn";
+import Dashboard from "./Dashboard/NewDash";
 import Settings from "./Settings/SettingsStdn";
 import { LogOff } from "../root/MangeLogin";
 import LoadingSpinner from "../root/LoadingSpinner";
-// import LoadingSpinner from "./LoadingSpinner";
+import ClassDteails from "./class/ClassDteails";
+import ScanQr from "./ScanQrpage/ScanQr";
+import { signOut, useSession } from "next-auth/react";
 
 // Define a type for the possible tab values
-type TabType = "dashboard" | "settings";
+type TabType = "dashboard" | "settings" | "class" | "scan";
 
 const SideNav = () => {
   const router = useRouter();
@@ -25,6 +28,7 @@ const SideNav = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("dashboard");
   const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     setLoading(false); // Simulate loading finished
@@ -35,6 +39,10 @@ const SideNav = () => {
       setActiveTab("dashboard");
     } else if (pathname.includes("/Student/Settings")) {
       setActiveTab("settings");
+    } else if (pathname.startsWith("/Student/Class/")) {
+      setActiveTab("class");
+    } else if (pathname.includes("/Student/Scan")) {
+      setActiveTab("scan");
     }
   }, [pathname]);
 
@@ -47,6 +55,22 @@ const SideNav = () => {
     setActiveTab(tab);
     setSidebarOpen(false);
   };
+
+  // Check if the current page is the Enroll page
+  const isEnrollPage = pathname.startsWith("/Student/Enroll");
+
+  // Dynamic heading based on the active tab or pathname
+  const heading =
+    activeTab === "class"
+      ? "Class Details"
+      : activeTab === "scan"
+      ? "Scan QR"
+      : activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
+
+  // If Enroll page, return only the content without sidebar and header
+  if (isEnrollPage) {
+    return null; // No side navigation or header for the Enroll page
+  }
 
   return (
     <div className="flex h-screen w-screen bg-gray-900">
@@ -63,8 +87,7 @@ const SideNav = () => {
           </button>
           <Image src="/img/logo.png" alt="Logo" width={50} height={50} className="mr-4" />
           <h2 className="text-2xl font-bold text-white">
-            {" "}
-            SA <span className="text-sky-500">&</span> LMS{" "}
+            SA <span className="text-sky-500">&</span> LMS
           </h2>
         </div>
 
@@ -80,6 +103,18 @@ const SideNav = () => {
           >
             <MdSpaceDashboard className="text-sky-500 text-2xl mr-4" />
             Dashboard
+          </button>
+
+          <button
+            onClick={() => handleNavigation("/Student/Scan", "scan")}
+            className={`flex items-center h-12 px-4 text-gray-300 rounded-xl transition 
+              ${activeTab === "scan"
+                ? "bg-gray-700 text-sky-400"
+                : "hover:bg-gray-700 hover:text-sky-400 hover:scale-105 hover:shadow-lg"
+              }`}
+          >
+            <BsQrCode className="text-sky-500 text-2xl mr-4" />
+            Mark Attendace
           </button>
 
           <button
@@ -115,19 +150,33 @@ const SideNav = () => {
             <MdOutlineMenu className="text-gray-200 text-2xl" />
           </button>
           <h2 className="text-2xl font-bold text-white">
-            {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+            {heading} {/* Dynamic heading */}
           </h2>
           <div className="flex items-center space-x-3">
-            <p className="text-gray-200">John</p>
+            <p className="text-gray-200">Student</p>
             <div className="w-8 h-8 rounded-full overflow-hidden">
-              <Image src="/img/logo.png" width={40} height={40} alt="logo" className="w-8 h-8" />
+              <Image
+                src={session?.user?.image || "/img/logo.png"}
+                width={40}
+                height={40}
+                alt="logo"
+                className="w-8 h-8"
+                onClick={() => router.push("/Student/Settings")}
+              />
             </div>
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {activeTab === "dashboard" && <Dashboard />}
-          {activeTab === "settings" && <Settings />}
+          {pathname.startsWith("/Student/Class/") ? (
+            <ClassDteails />
+          ) : activeTab === "dashboard" ? (
+            <Dashboard />
+          ) : activeTab === "scan" ? (
+            <ScanQr />
+          ) : (
+            <Settings />
+          )}
         </div>
       </div>
     </div>
