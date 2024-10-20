@@ -50,7 +50,21 @@ export async function POST(request) {
       );
     }
 
+<<<<<<< Updated upstream
     // Step 3: Combine the data and return the final response
+=======
+    // Step 3: Check if the student is in the class schema
+    const isStudentInClass = classData.students.some(student => student.email === email);
+
+    if (!isStudentInClass) {
+      return NextResponse.json(
+        { message: "Student has dropped from the class." },
+        { status: 403 } // Forbidden
+      );
+    }
+
+    // Step 4: Return the latest class and class details
+>>>>>>> Stashed changes
     const result = {
       message: "Class found",
       attendance: {

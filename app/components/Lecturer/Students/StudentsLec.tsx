@@ -262,16 +262,19 @@ const [datalist , setdatalist] = useState<String[]>([])
         <h1 className="text-4xl font-bold text-indigo-300">
           {" "}
           Student Registration{" "}
+
+          
         </h1>
 
         <h3 className="text-xl font-bold text-indigo-600">
           {name} ({code})
+          <br />
         </h3>
         <div className="my-6 flex flex-wrap gap-4">
           <button
             onClick={() => setIsAddModalOpen(true)}
             className="text-white px-14 py-3 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none font-semibold
-                     focus:ring-2 focus:ring-opacity-50 shadow-xl text-sm sm:text-base flex items-center justify-center space-x-2 bg-blue-500 hover:bg-blue-700"
+            focus:ring-2 focus:ring-opacity-50 shadow-xl text-sm sm:text-base flex items-center justify-center space-x-2 bg-blue-500 hover:bg-blue-700"
           >
             <FaUserPlus className="mr-3 text-xl sm:text-2xl" />
             Add Student
@@ -279,12 +282,13 @@ const [datalist , setdatalist] = useState<String[]>([])
           <button
             onClick={() => setIsBulkUploadModalOpen(true)}
             className="bg-green-500 hover:bg-green-700 text-white px-7 py-3 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none 
-                     focus:ring-2 focus:ring-opacity-50 shadow-xl text-sm sm:text-base flex items-center justify-center space-x-2 font-semibold"
+            focus:ring-2 focus:ring-opacity-50 shadow-xl text-sm sm:text-base flex items-center justify-center space-x-2 font-semibold"
           >
             <FaUsers className="mr-3 text-xl sm:text-2xl" />
             Add Students in Bulk
           </button>
         </div>
+            <span className="text-red-600"> ⚠️ After adding all the student details, make sure to <b>click the 'Update' button </b> to securely save the information. !</span>
       </header>
 
       {/* Student List */}
@@ -297,7 +301,11 @@ const [datalist , setdatalist] = useState<String[]>([])
               className="bg-amber-500 hover:bg-amber-700 ml-auto text-white px-5 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none 
                      focus:ring-2 focus:ring-opacity-50 shadow-xl text-sm sm:text-base flex items-center justify-center space-x-2 font-semibold"
             >
+<<<<<<< Updated upstream
               Push
+=======
+              Update
+>>>>>>> Stashed changes
               <CgPushUp className="ml-3 text-xl sm:text-xl" />
             </button>
           </div>
