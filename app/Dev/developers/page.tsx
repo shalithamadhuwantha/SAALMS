@@ -66,8 +66,8 @@ const developers: Developer[] = [
       name: 'Tharushi Weerasinghe',
       role: 'UI/UX Designer',
       description: 'Innovative UI/UX designer dedicated to creating intuitive and visually stunning user experiences.',
-      image: 'https://api.dicebear.com/6.x/initials/svg?seed=TW',
-      fullImage: 'https://api.dicebear.com/6.x/personas/svg?seed=TW',
+      image: '/profileimg/tharu.jpg',
+      fullImage: '/profileimg/tharu.jpg',
       links: [
          { name: 'GitHub', url: 'https://github.com/tharushiweerasinghe2002', icon: FaGithub },
          { name: 'LinkedIn', url: 'https://www.linkedin.com/in/tharushi-weerasinghe-71276b2a3/', icon: FaLinkedin },
@@ -79,8 +79,8 @@ const developers: Developer[] = [
       name: 'Divantha Ambrose',
       role: 'UI/UX Designer',
       description: 'Talented UI/UX designer with a keen eye for detail and a passion for creating engaging digital experiences.',
-      image: 'https://api.dicebear.com/6.x/initials/svg?seed=DA',
-      fullImage: 'https://api.dicebear.com/6.x/personas/svg?seed=DA',
+      image: '/profileimg/diva.jpg',
+      fullImage: '/profileimg/diva.jpg',
       links: [
          { name: 'GitHub', url: 'https://github.com/divantha', icon: FaGithub },
          { name: 'LinkedIn', url: 'https://www.linkedin.com/in/divantha-ambrose-9aa126247/', icon: FaLinkedin },
