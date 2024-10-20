@@ -100,7 +100,7 @@ export default function CoursePage() {
         {errorMessage && (
           <p className="text-center text-red-600">{errorMessage}</p>
         )}
-
+{/* app\Lecturer\QR\[id]\page.tsx */}
         <div className="flex justify-center mb-6">
           {qrData && (
             <QRCode

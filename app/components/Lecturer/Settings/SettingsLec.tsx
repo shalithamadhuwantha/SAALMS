@@ -395,6 +395,8 @@ const LecturerSettings = () => {
                 </div>
               )}
             </form>
+
+            
           </div>
         </div>
       </div>

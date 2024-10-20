@@ -136,8 +136,8 @@ const StudentDashboard: React.FC = () => {
           email: profileData.email || "itt2022000@tec.rjt.ac.lk",
           faculty: profileData.faculty || "Faculty of Technology",
           department: profileData.university || "ICT Department",
-          avatarBgColor: "bg-gradient-to-r from-blue-500 to-purple-600", // Keep existing values
-          avatarText: "Gx", // Keep existing values
+          avatarBgColor: "bg-gradient-to-r from-blue-500 to-purple-600", 
+          avatarText: "Gx", 
         });
   
         // Fetch courses once the lecturerID is set
@@ -157,10 +157,10 @@ const StudentDashboard: React.FC = () => {
   
   useEffect(() => {
     if (status === "authenticated") {
-      getUserid(); // Call once the session is authenticated
+      getUserid(); 
     }
     setLoading(false)
-  }, [status]); // Dependency on session status to ensure session is available before calling the API
+  }, [status]); 
   
 
   const router = useRouter();

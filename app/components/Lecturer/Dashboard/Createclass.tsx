@@ -332,7 +332,7 @@ const CreateClassPage: React.FC = () => {
                     htmlFor="code"
                     className="block text-sm font-medium text-indigo-300"
                   >
-                    Class Code
+                    Class Code <span className="text-red-600">*</span>
                   </label>
                   <input
                     id="code"
@@ -351,7 +351,7 @@ const CreateClassPage: React.FC = () => {
                     htmlFor="name"
                     className="block text-sm font-medium text-indigo-300"
                   >
-                    Class Name
+                    Class Name <span className="text-red-600">*</span>
                   </label>
                   <input
                     id="name"
@@ -369,7 +369,7 @@ const CreateClassPage: React.FC = () => {
                     htmlFor="batch"
                     className="block text-sm font-medium text-indigo-300"
                   >
-                    Batch
+                    Batch <span className="text-red-600">*</span>
                   </label>
                   <input
                     id="batch"
@@ -392,7 +392,7 @@ const CreateClassPage: React.FC = () => {
                     htmlFor="lessonName"
                     className="block text-sm font-medium text-indigo-300"
                   >
-                    Short Description
+                    Short Description <span className="text-red-600">*</span>
                   </label>
                   <input
                     id="lessonName"
@@ -411,7 +411,7 @@ const CreateClassPage: React.FC = () => {
                       htmlFor="date"
                       className="block text-sm font-medium text-indigo-300"
                     >
-                      Date
+                      Date <span className="text-red-600">*</span>
                     </label>
                     <input
                       id="date"
@@ -428,7 +428,7 @@ const CreateClassPage: React.FC = () => {
                       htmlFor="time"
                       className="block text-sm font-medium text-indigo-300"
                     >
-                      Time
+                      Time <span className="text-red-600">*</span>
                     </label>
                     <input
                       id="time"
@@ -442,7 +442,7 @@ const CreateClassPage: React.FC = () => {
                   </div>
                   <div className="space-y-2 md:col-span-2">
                     <label className="block text-sm font-medium text-indigo-300">
-                      Class Type
+                      Class Type <span className="text-red-600">*</span>
                     </label>
                     <select
                       name="type"
@@ -518,6 +518,7 @@ const CreateClassPage: React.FC = () => {
               )}
             </div>
           </form>
+          <sub className="text-red-600"> * All feild are requement</sub>
         </div>
       </div>
     </main>
