@@ -90,6 +90,7 @@ const Enroll = () => {
           });
 
           const data = await response.json();
+console.log(data);
 
           if (response.ok) {
             if(data.message == "Course and student found."){

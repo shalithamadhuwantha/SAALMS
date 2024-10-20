@@ -48,8 +48,18 @@ export async function POST(request) {
     });
 
     if (!classRecord) {
+      // If course is not found, return lecturer as null but keep output structure
       return NextResponse.json(
-        { message: "Course not found." },
+        {
+          message: "Course not found.",
+          classDetails: {
+            lecturer: {
+              name: null, 
+              image: null,
+            },
+          },
+          student: null,
+        },
         { status: 200 }
       );
     }
@@ -57,21 +67,15 @@ export async function POST(request) {
     // Fetch lecturer details
     const lecturer = await Lecturer.findById(classRecord.lecturerID);
 
-    if (!lecturer) {
-      return NextResponse.json(
-        { message: "Lecturer not found." },
-        { status: 200 }
-      );
-    }
-
     // Search for the attendance record using classHash (Attendance _id) and courseCode (lectureId)
     const attendanceRecord = await Attendance.findOne({
       _id: new ObjectId(classHash),
       lectureId: courseCode,
     });
 
-    // It's okay if attendance record is not found, don't return an error
+    // Default attendance flag
     let isAttended = false;
+
     if (attendanceRecord) {
       // Check if the student is present in the attendance record
       const studentInAttendance = attendanceRecord.students.find(
@@ -89,18 +93,27 @@ export async function POST(request) {
       (student) => student.email === email
     );
 
+    // Return class and lecturer details even if student is not found
     if (!studentInClass) {
-      // Return lecturer details since the student was not found in the Class
       return NextResponse.json(
         {
           message: "Student not found in the class record.",
           classDetails: {
             lecturer: {
-              name: lecturer.name, // Lecturer name
-              image: lecturer.image, // Lecturer profile image URL
+              name: lecturer ? lecturer.name : null, // Lecturer name
+              image: lecturer ? lecturer.image : null, // Lecturer profile image URL
             },
+            code: classRecord.code,
+            name: classRecord.name,
+            batch: classRecord.batch,
+            lessonName: classRecord.lessonName,
+            date: classRecord.date,
+            time: classRecord.time,
+            type: classRecord.type,
+            link: classRecord.link,
+            additionalLink: classRecord.additionalLink,
           },
-          student: null, // Student not found
+          student: null,
         },
         { status: 200 }
       );
@@ -112,8 +125,8 @@ export async function POST(request) {
         message: "Course and student found.",
         classDetails: {
           lecturer: {
-            name: lecturer.name, // Lecturer name
-            image: lecturer.image, // Lecturer profile image URL
+            name: lecturer ? lecturer.name : null, // Lecturer name
+            image: lecturer ? lecturer.image : null, // Lecturer profile image URL
           },
           code: classRecord.code,
           name: classRecord.name,

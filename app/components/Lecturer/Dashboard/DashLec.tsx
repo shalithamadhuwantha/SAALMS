@@ -17,6 +17,7 @@ import AttendanceComponent from "./AttendaceFile";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import Swal from "sweetalert2";
+import { FaRegEdit } from "react-icons/fa";
 
 import LoadingSpinner from "../../root/LoadingSpinner";
 
@@ -821,8 +822,7 @@ const LecturerDashboard: React.FC = () => {
           <button
             onClick={handleUpdateDetails}
             className="absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg transition-colors duration-300"
-          >
-            Update
+          > <FaRegEdit />
           </button>
         </>
       )}

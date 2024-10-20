@@ -14,7 +14,7 @@ export async function POST(request) {
     );
   }
 
-  const senderEmail = "saalms@shalithamadhuwantha.me";
+  const senderEmail = process.env.EMAIL_USER;
   const senderName= "SA&LMS Lecture Notifications"
 
   // Read the HTML template from the file system
@@ -31,12 +31,13 @@ export async function POST(request) {
 
   // Create a transporter using Brevo SMTP
   const transporter = nodemailer.createTransport({
-    host: "smtp-relay.brevo.com",
+    // host: "smtp-relay.brevo.com",
+    host: "smtp.gmail.com",
     port: 587,
     secure: false,
     auth: {
-      user: process.env.SMTP_usr,
-      pass: process.env.SMTP_pass,
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
   });
 
