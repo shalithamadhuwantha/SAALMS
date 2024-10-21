@@ -289,36 +289,46 @@ const LecturerDashboard: React.FC = () => {
     setIsEditing(false); // Exit edit mode after saving
   };
 
-  function convertToCSV(
-    data: AttendanceRecord[],
-    lectureId: string,
-    createDate: string
-  ): string {
-    // CSV Header
-    console.log(createDate);
+function convertToCSV(
+  data: AttendanceRecord[],
+  lectureId: string,
+  createDate: string
+): string {
+  // CSV Header
+  console.log(createDate);
 
-    const headers = [
-      `lecture id,${lectureId},,,,`,
-      `Create Date,${createDate},,,,`,
-      `,,,,`,
-      `Date,ID,Email,Name,Register number,attendance`,
-    ];
+  const headers = [
+    `Lecture ID,${lectureId},,,,`,           // Header row for Lecture ID
+    `Create Date,${createDate},,,,`,         // Header row for creation date
+    `,,,,`,                                  // Empty row for separation
+    `Date,ID,Email,Name,Register number,Attendance`,  // Main data headers
+  ];
 
-    // CSV Rows
-    const rows = data
-      .map((record) => {
-        return record.students.map((student) => {
-          // Get attendance value as 0 or 1 based on the emoji
-          const attendanceValue = student.attendance === "🔴" ? 0 : 1;
-          return `"${record.date}",${student.id},${student.email},${student.name},${student.registrationNumber},${attendanceValue}`;
-        });
-      })
-      .flat(); // Flatten the array of arrays into a single array
+  // CSV Rows
+  const rows = data
+    .map((record) => {
+      return record.students.map((student) => {
+        // Get attendance value as 0 or 1 based on the emoji
+        const attendanceValue = student.attendance === "🔴" ? 0 : 1;
+        
+        // Ensure all fields are correctly quoted in case they contain commas or special characters
+        return [
+          `"${record.date}"`,                // Date
+          `"${student.id}"`,                 // Student ID
+          `"${student.email}"`,              
+          `"${student.name}"`,               
+          `"${student.registrationNumber}"`, 
+          `"${attendanceValue}"`,            
+        ].join(",");                         
+      });
+    })
+    .flat(); // Flatten the array of arrays into a single array
 
-    // Combine headers and rows
-    const csvContent = [...headers, ...rows].join("\n");
-    return csvContent;
-  }
+  // Combine headers and rows
+  const csvContent = [...headers, ...rows].join("\n");  // Join with newline character
+  return csvContent;
+}
+
 
   // Function to download CSV file
   function downloadCSV(data: AttendanceRecord[]) {
@@ -417,6 +427,7 @@ const LecturerDashboard: React.FC = () => {
     };
 
     console.log(requestData);
+console.log();
 
     try {
       const response = await fetch("/api/course/find/doc", {
